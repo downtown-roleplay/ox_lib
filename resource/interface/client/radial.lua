@@ -133,6 +133,7 @@ RegisterNUICallback('radialClose', function(_, cb)
     currentRadial = nil
 end)
 
+--[[
 lib.addKeybind({
     name = 'ox_lib-radial',
     description = 'Open radial menu',
@@ -161,6 +162,7 @@ lib.addKeybind({
     end,
     onReleased = lib.hideRadial,
 })
+]]
 
 AddEventHandler('onClientResourceStop', function(resource)
     for i = #menuItems, 1, -1 do
