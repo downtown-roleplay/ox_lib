@@ -292,7 +292,7 @@ function lib.disableRadial(state)
     end
 end
 
-lib.addKeybind({
+--[[lib.addKeybind({
     name = 'ox_lib-radial',
     description = 'Open radial menu',
     defaultKey = 'z',
@@ -325,8 +325,7 @@ lib.addKeybind({
         end
     end,
     -- onReleased = lib.hideRadial,
-})
-]]
+})]]
 
 AddEventHandler('onClientResourceStop', function(resource)
     for i = #menuItems, 1, -1 do
