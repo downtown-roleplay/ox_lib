@@ -1,10 +1,10 @@
 {
-  "language": "Español",
+  "language": "Thailand",
   "ui": {
-    "cancel": "Cancelar",
-    "close": "Cerrar",
-    "confirm": "Confirmar",
-    "more": "Más..."
+    "cancel": "ยกเลิก",
+    "close": "ปิด",
+    "confirm": "ยืนยัน",
+    "more": "เพิ่มเติม..."
   },
   "txadmin_announcement": "Server announcement by %s",
   "txadmin_dm": "Direct Message from %s",
