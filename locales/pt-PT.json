@@ -1,0 +1,14 @@
+{
+  "language": "Português Portugal",
+  "ui": {
+    "cancel": "Cancelar",
+    "close": "Fechar",
+    "confirm": "Confirmar",
+    "more": "Mais..."
+  },
+  "txadmin_announcement": "Anúncio por %s",
+  "txadmin_dm": "Mensagem direta por %s",
+  "txadmin_warn": "Você foi advertido por %s",
+  "txadmin_warn_content": "%s  \nAction ID: %s",
+  "txadmin_scheduledrestart": "Tempestade"
+}
