@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { SkillCheckProps } from '../../typings';
 import { useInterval } from '@mantine/hooks';
-import { circleCircumference } from './index';
 
 interface Props {
   angle: number;
@@ -14,7 +13,7 @@ interface Props {
 
 const Indicator: React.FC<Props> = ({ angle, offset, multiplier, handleComplete, skillCheck, className }) => {
   const [indicatorAngle, setIndicatorAngle] = useState(-90);
-  const [keyPressed, setKeyPressed] = useState(false);
+  const [keyPressed, setKeyPressed] = useState<false | string>(false);
   const interval = useInterval(
     () =>
       setIndicatorAngle((prevState) => {
@@ -25,8 +24,7 @@ const Indicator: React.FC<Props> = ({ angle, offset, multiplier, handleComplete,
 
   const keyHandler = useCallback(
     (e: KeyboardEvent) => {
-      if (e.key.toLowerCase() !== skillCheck.key.toLowerCase()) return;
-      setKeyPressed(true);
+      setKeyPressed(e.key.toLowerCase());
     },
     [skillCheck]
   );
@@ -47,26 +45,20 @@ const Indicator: React.FC<Props> = ({ angle, offset, multiplier, handleComplete,
   useEffect(() => {
     if (!keyPressed) return;
 
+    if (skillCheck.keys && !skillCheck.keys?.includes(keyPressed)) return;
+
     interval.stop();
 
-    setKeyPressed(false);
     window.removeEventListener('keydown', keyHandler);
 
-    if (indicatorAngle < angle || indicatorAngle > angle + offset) handleComplete(false);
+    if (keyPressed !== skillCheck.key || indicatorAngle < angle || indicatorAngle > angle + offset)
+      handleComplete(false);
     else handleComplete(true);
+
+    setKeyPressed(false);
   }, [keyPressed]);
 
-  return (
-    <circle
-      r={50}
-      cx={250}
-      cy={250}
-      strokeDasharray={circleCircumference}
-      strokeDashoffset={circleCircumference - 3}
-      transform={`rotate(${indicatorAngle}, 250, 250)`}
-      className={className}
-    />
-  );
+  return <circle transform={`rotate(${indicatorAngle}, 250, 250)`} className={className} />;
 };
 
 export default Indicator;

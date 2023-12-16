@@ -1,8 +1,8 @@
 import { NumberInput } from '@mantine/core';
 import { INumber } from '../../../../typings/dialog';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Control, useController } from 'react-hook-form';
 import { FormValues } from '../../InputDialog';
+import LibIcon from '../../../../components/LibIcon';
 
 interface Props {
   row: INumber;
@@ -15,7 +15,7 @@ const NumberField: React.FC<Props> = (props) => {
     name: `test.${props.index}.value`,
     control: props.control,
     defaultValue: props.row.default,
-    rules: { required: props.row.required },
+    rules: { required: props.row.required, min: props.row.min, max: props.row.max },
   });
 
   return (
@@ -30,8 +30,10 @@ const NumberField: React.FC<Props> = (props) => {
       defaultValue={props.row.default}
       min={props.row.min}
       max={props.row.max}
+      step={props.row.step}
+      precision={props.row.precision}
       disabled={props.row.disabled}
-      icon={props.row.icon && <FontAwesomeIcon icon={props.row.icon} fixedWidth />}
+      icon={props.row.icon && <LibIcon icon={props.row.icon} fixedWidth />}
       withAsterisk={props.row.required}
     />
   );
