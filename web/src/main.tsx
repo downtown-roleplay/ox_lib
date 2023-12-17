@@ -16,7 +16,7 @@ if (isEnvBrowser()) {
   const root = document.getElementById('root');
 
   // https://i.imgur.com/iPTAdYV.png - Night time img
-  root!.style.backgroundImage = 'url("https://i.imgur.com/3pzRj9n.png")';
+  root!.style.backgroundImage = 'url("https://media.discordapp.net/attachments/1014873079115161660/1175144410766376970/game-background.png")';
   root!.style.backgroundSize = 'cover';
   root!.style.backgroundRepeat = 'no-repeat';
   root!.style.backgroundPosition = 'center';
