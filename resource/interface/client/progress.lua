@@ -55,7 +55,8 @@ local controls = {
     INPUT_VEH_ACCELERATE = isFivem and 71 or 0x5B9FD4E2,
     INPUT_VEH_BRAKE = isFivem and 72 or 0x6E1F639B,
     INPUT_VEH_EXIT = isFivem and 75 or 0xFEFAB9B4,
-    INPUT_VEH_MOUSE_CONTROL_OVERRIDE = isFivem and 106 or 0x39CCABD5
+    INPUT_VEH_MOUSE_CONTROL_OVERRIDE = isFivem and 106 or 0x39CCABD5,
+    INPUT_LOOK_BEHIND = isFivem and 107 or 0x9959A6F0,
 }
 
 local function startProgress(data)
@@ -103,6 +104,7 @@ local function startProgress(data)
                 DisableControlAction(0, controls.INPUT_MOVE_LR, true)
                 DisableControlAction(0, controls.INPUT_MOVE_UD, true)
                 DisableControlAction(0, controls.INPUT_DUCK, true)
+                DisableControlAction(0, controls.INPUT_LOOK_BEHIND, true)
             end
 
             if disable.car then
