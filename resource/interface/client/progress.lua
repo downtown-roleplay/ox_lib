@@ -107,6 +107,11 @@ local function startProgress(data)
                 DisableControlAction(0, controls.INPUT_LOOK_BEHIND, true)
             end
 
+            if disable.sprint then
+                DisableControlAction(0, controls.INPUT_LOOK_BEHIND, true)
+                DisableControlAction(0, controls.INPUT_SPRINT, true)
+            end
+
             if disable.car then
                 DisableControlAction(0, controls.INPUT_VEH_MOVE_LEFT_ONLY, true)
                 DisableControlAction(0, controls.INPUT_VEH_MOVE_RIGHT_ONLY, true)
