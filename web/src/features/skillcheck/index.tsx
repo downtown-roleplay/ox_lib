@@ -14,6 +14,11 @@ const difficultyOffsets = {
   medium: 40,
   hard: 25,
 };
+const backgroundImageUrl = "https://cdn.discordapp.com/attachments/795805802208165889/1203662743043964989/DOWNTOWN_POST03.png?ex=65d1e948&is=65bf7448&hm=56a884abc83d2e2eeaabe01e4c2f3e785fc712b984d14e36800857fedcad93d0&";
+const backgroundImageSize = {
+  width: 100, // Defina a largura desejada
+  height: 100, // Defina a altura desejada
+};
 
 const useStyles = createStyles((theme, params: { difficultyOffset: number }) => ({
   svg: {
@@ -27,8 +32,8 @@ const useStyles = createStyles((theme, params: { difficultyOffset: number }) => 
   },
   track: {
     fill: 'transparent',
-    stroke: theme.colors.dark[5],
-    strokeWidth: 8,
+    stroke: theme.colors.dark[1],
+    strokeWidth: 2,
     r: 50,
     cx: 250,
     cy: 250,
@@ -76,11 +81,11 @@ const useStyles = createStyles((theme, params: { difficultyOffset: number }) => 
     left: '50%',
     top: '50%',
     transform: 'translate(-50%, -50%)',
-    backgroundColor: theme.colors.dark[5],
+    backgroundColor: theme.colors.dark[9],
     width: 25,
     height: 25,
     textAlign: 'center',
-    borderRadius: 5,
+    borderRadius: 10,
     fontSize: 16,
     fontWeight: 500,
     display: 'flex',
@@ -93,6 +98,7 @@ const useStyles = createStyles((theme, params: { difficultyOffset: number }) => 
     },
   },
 }));
+
 
 const SkillCheck: React.FC = () => {
   const [visible, setVisible] = useState(false);
@@ -159,10 +165,26 @@ const SkillCheck: React.FC = () => {
     <>
       {visible && (
         <>
+          {/* Adicionando a imagem de fundo */}
+          <img
+            src={backgroundImageUrl}
+            alt="Background"
+            style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              // borderRadius: 100,
+              clipPath: 'circle(50%)',
+              width: backgroundImageSize.width,
+              height: backgroundImageSize.height,
+              // zIndex: -1, // Posiciona a imagem de fundo atrás do SVG
+            }}
+          />
           <svg className={classes.svg}>
-            {/*Circle track*/}
+            {/* Circle track */}
             <circle className={classes.track} />
-            {/*SkillCheck area*/}
+            {/* SkillCheck area */}
             <circle transform={`rotate(${skillCheck.angle}, 250, 250)`} className={classes.skillArea} />
             <Indicator
               angle={skillCheck.angle}
@@ -185,7 +207,7 @@ const SkillCheck: React.FC = () => {
         </>
       )}
     </>
-  );
+  );  
 };
 
 export default SkillCheck;
