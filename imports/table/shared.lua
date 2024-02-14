@@ -79,6 +79,24 @@ local function table_deepclone(tbl)
 	return tbl
 end
 
+local function table_map(t, f)
+	assert(type(t) == "table", "First argument must be a table")
+	assert(type(f) == "function", "Second argument must be a function")
+	local newT = table.create(#t, #t)
+	for k,v in pairs(t) do
+		newT[k] = f(v, k, t)
+	end
+	return newT
+end
+
+local function table_extend(target, extension)
+	local tbl = table.clone(target)
+	for _, v in ipairs(extension) do
+		table.insert(tbl, v)
+	end
+	return tbl
+end
+
 ---@param t1 table
 ---@param t2 table
 ---@param addDuplicateNumbers boolean? add duplicate number keys together if true, replace if false. Defaults to true.
@@ -107,7 +125,8 @@ table.contains = contains
 table.matches = table_matches
 table.deepclone = table_deepclone
 table.merge = table_merge
-
+table.map = table_map
+table.extend = table_extend
 local frozenNewIndex = function(self) error(('cannot set values on a frozen table (%s)'):format(self), 2) end
 local _rawset = rawset
 
