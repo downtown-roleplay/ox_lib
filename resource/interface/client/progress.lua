@@ -218,8 +218,8 @@ RegisterNUICallback('progressComplete', function(data, cb)
     progress = nil
 end)
 
-RegisterCommand('cancelprogress', function()
+RegisterCommand('cancelar', function()
     if progress?.canCancel then progress = false end
 end)
 
-RegisterKeyMapping('cancelprogress', 'Cancel current progress bar', 'keyboard', 'x')
+RegisterKeyMapping('cancelar', 'Cancel current progress bar', 'keyboard', 'x')
