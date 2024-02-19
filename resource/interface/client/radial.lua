@@ -275,8 +275,28 @@ RegisterNUICallback('radialClose', function(_, cb)
     currentRadial = nil
 end)
 
---[[
-lib.addKeybind({
+RegisterNUICallback('radialTransition', function(_, cb)
+    Wait(100)
+
+    -- If menu was closed during transition, don't open the submenu
+    if not isOpen then return cb(false) end
+
+    cb(true)
+end)
+
+local isDisabled = false
+
+---Disallow players from opening the radial menu.
+---@param state boolean
+function lib.disableRadial(state)
+    isDisabled = state
+
+    if isOpen and state then
+        return lib.hideRadial()
+    end
+end
+
+--[[lib.addKeybind({
     name = 'ox_lib-radial',
     description = locale('open_radial_menu'),
     defaultKey = 'z',
@@ -312,8 +332,7 @@ lib.addKeybind({
         end
     end,
     -- onReleased = lib.hideRadial,
-})
-]]
+})]]
 
 AddEventHandler('onClientResourceStop', function(resource)
     for i = #menuItems, 1, -1 do
