@@ -89,6 +89,17 @@ local function table_map(t, f)
 	return newT
 end
 
+
+local function table_filter(t, pairsFunc, filterIter)
+	local out = {}
+	for k, v in pairsFunc(t) do
+		if filterIter(v, k, t) then
+			table.insert(out, v)
+		end
+	end
+	return out
+  end
+
 local function table_extend(target, extension)
 	local tbl = table.clone(target)
 	for _, v in ipairs(extension) do
@@ -127,6 +138,7 @@ table.deepclone = table_deepclone
 table.merge = table_merge
 table.map = table_map
 table.extend = table_extend
+table.filter = table_filter
 local frozenNewIndex = function(self) error(('cannot set values on a frozen table (%s)'):format(self), 2) end
 local _rawset = rawset
 
