@@ -107,7 +107,8 @@ local function startProgress(data)
                 DisableControlAction(0, controls.INPUT_LOOK_BEHIND, true)
             end
 
-            if disable.sprint and not disable.move then
+            if disable.sprint then
+                DisableControlAction(0, controls.INPUT_LOOK_BEHIND, true)
                 DisableControlAction(0, controls.INPUT_SPRINT, true)
             end
 
