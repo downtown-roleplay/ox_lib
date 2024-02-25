@@ -14,7 +14,7 @@ const difficultyOffsets = {
   medium: 40,
   hard: 25,
 };
-const backgroundImageUrl = "https://cdn.discordapp.com/attachments/795805802208165889/1203662743043964989/DOWNTOWN_POST03.png?ex=65d1e948&is=65bf7448&hm=56a884abc83d2e2eeaabe01e4c2f3e785fc712b984d14e36800857fedcad93d0&";
+const backgroundImageUrl = "https://cdn.downtownrp.com.br/images/resources/ox_lib/skillcheck.png";
 const backgroundImageSize = {
   width: 100, // Defina a largura desejada
   height: 100, // Defina a altura desejada
