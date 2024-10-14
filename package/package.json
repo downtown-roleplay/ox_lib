@@ -5,6 +5,7 @@
   "description": "JS/TS wrapper for ox_lib exports",
   "main": "./shared/index.js",
   "types": "./shared/index.d.ts",
+  "sideEffects": ["./shared/resource/locale/index.js"],
   "scripts": {
     "compile": "tsc",
     "prepare": "npm run compile"
@@ -25,8 +26,9 @@
   "license": "LGPL-3.0",
   "dependencies": {
     "@nativewrappers/client": "^1.7.33",
+    "csstype": "^3.1.3",
     "fast-printf": "^1.6.9",
-    "typescript": "^5.3.3"
+    "typescript": "^5.4.2"
   },
   "devDependencies": {
     "@citizenfx/client": "latest",
@@ -34,7 +36,7 @@
     "@fortawesome/fontawesome-common-types": "6.1.1",
     "@mantine/core": "^6.0.21",
     "@types/node": "16.9.1",
-    "@types/react": "^18.2.48",
+    "@types/react": "^18.2.66",
     "prettier": "^2.8.8"
   }
 }

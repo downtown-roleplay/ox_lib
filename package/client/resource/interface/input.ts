@@ -63,6 +63,8 @@ interface SelectProps extends BaseInput {
   disabled?: boolean;
   default?: string | string[];
   clearable?: boolean;
+  searchable?: boolean;
+  maxSelectedValues?: number;
 }
 
 interface SliderProps extends BaseInput {
@@ -156,6 +158,6 @@ type inputDialog = (
     allowCancel?: boolean;
   }
 ) => Promise<Array<string | number | boolean> | undefined>;
-export const inputDialog: inputDialog = async (heading, rows) => await exports.ox_lib.inputDialog(heading, rows);
+export const inputDialog: inputDialog = async (heading, rows, options) => await exports.ox_lib.inputDialog(heading, rows, options);
 
 export const closeInputDialog = () => exports.ox_lib.closeInputDialog();
