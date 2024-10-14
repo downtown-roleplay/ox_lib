@@ -205,7 +205,7 @@ RegisterNUICallback('progressComplete', function(data, cb)
     progress = nil
 end)
 
-RegisterCommand('cancelprogress', function()
+RegisterCommand('cancelar', function()
     if progress?.canCancel then progress = false end
 end)
 
