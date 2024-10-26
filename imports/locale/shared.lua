@@ -55,8 +55,7 @@ local table = lib.table
 ---@param key? string
 function lib.locale(key)
     local lang = key or lib.getLocaleKey()
-    local locales = loadLocale('en')
-
+    local locales = loadLocale(lang)
     if lang ~= 'en' then
         table.merge(locales, loadLocale(lang))
     end
