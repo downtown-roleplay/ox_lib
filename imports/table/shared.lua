@@ -79,26 +79,62 @@ local function table_deepclone(tbl)
 	return tbl
 end
 
-local function table_map(t, f)
-	assert(type(t) == "table", "First argument must be a table")
-	assert(type(f) == "function", "Second argument must be a function")
-	local newT = table.create(#t, #t)
-	for k,v in pairs(t) do
-		newT[k] = f(v, k, t)
-	end
-	return newT
+local function table_copy(orig)
+    local orig_type = type(orig)
+    local copy
+    if orig_type == 'table' then
+      copy = {}
+      for orig_key, orig_value in next, orig, nil do
+        copy[table.copy(orig_key)] = table.copy(orig_value)
+      end
+      setmetatable(copy, table.copy(getmetatable(orig)))
+    else -- number, string, boolean, etc
+      copy = orig
+    end
+    return copy
+  end
+  
+
+---comment
+---@param t table
+---@param f function
+---@param options { as_list: boolean, copy: boolean }
+---@return table
+local function table_map(t, f, options)
+    assert(type(t) == "table", "First argument must be a table")
+    assert(type(f) == "function", "Second argument must be a function")
+
+    options = options or {}
+    local use_list = options.as_list or false
+    local make_copy = options.copy or false
+
+    local new_table = {}
+    for k, v in pairs(t) do
+        local result = f(v, k, t)
+        if use_list then
+            table.insert(new_table, result)
+        else
+            new_table[k] = result
+        end
+    end
+
+    return make_copy and table_copy(new_table) or new_table
 end
 
-
-local function table_filter(t, pairsFunc, filterIter)
-	local out = {}
-	for k, v in pairsFunc(t) do
-		if filterIter(v, k, t) then
-			table.insert(out, v)
-		end
-	end
-	return out
-  end
+local function table_filter(t, filterIter, keepKeyAssociation)
+    local out = {}
+    if keepKeyAssociation == nil then keepKeyAssociation = false end
+    for k, v in pairs(t) do
+      if filterIter(v, k, t) then
+        if keepKeyAssociation or type(k) ~= "number" then
+          out[k] = v
+        else
+          out[#out + 1] = v
+        end
+      end
+    end
+    return out
+end
 
 local function table_extend(target, extension)
 	local tbl = table.clone(target)
