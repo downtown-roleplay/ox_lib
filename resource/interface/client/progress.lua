@@ -21,7 +21,7 @@ local createdProps = {}
 ---@field allowFalling? boolean
 ---@field allowSwimming? boolean
 ---@field canCancel? boolean
----@field anim? { dict?: string, clip: string, flag?: number, blendIn?: number, blendOut?: number, duration?: number, playbackRate?: number, lockX?: boolean, lockY?: boolean, lockZ?: boolean, scenario?: string, playEnter?: boolean }
+---@field anim? { dict?: string, clip: string, flag?: number, blendIn?: number, blendOut?: number, duration?: number, playbackRate?: number, lockX?: boolean, lockY?: boolean, lockZ?: boolean, scenario?: string, scenarioPoint?: number, playEnter?: boolean }
 ---@field prop? ProgressPropProps | ProgressPropProps[]
 ---@field disable? { move?: boolean, sprint?: boolean, car?: boolean, combat?: boolean, mouse?: boolean }
 
@@ -76,6 +76,8 @@ local function startProgress(data)
             RemoveAnimDict(anim.dict)
         elseif anim.scenario then
             TaskStartScenarioInPlace(cache.ped, anim.scenario, 0, anim.playEnter == nil or anim.playEnter)
+        elseif anim.scenarioPoint then
+            TaskUseScenarioPoint(cache.ped, anim.scenarioPoint, '', -1.0, true, false, 0, false, -1.0, true)
         end
     end
 
