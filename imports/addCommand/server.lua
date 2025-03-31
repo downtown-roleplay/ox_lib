@@ -1,8 +1,8 @@
 ---@class OxCommandParams
 ---@field name string
 ---@field help? string
----@field type? 'number' | 'playerId' | 'string' | 'longString'
 ---@field optional? boolean
+---@field type? 'number' | 'playerId' | 'string' | 'longString' | 'characterId'
 
 ---@class OxCommandProperties
 ---@field help string?
@@ -41,6 +41,13 @@ local function parseArguments(source, args, raw, params)
             value = not tonumber(arg) and arg
         elseif param.type == 'playerId' then
             value = arg == 'me' and source or tonumber(arg)
+
+            if not value or not DoesPlayerExist(value--[[@as string]]) then
+                value = false
+            end
+        elseif param.type == 'characterId' then
+            local Core = exports.core:getSharedObject()
+            value = arg == 'me' and source or Core.GetPlayerIdFromCharacterId(arg)
 
             if not value or not DoesPlayerExist(value--[[@as string]]) then
                 value = false
