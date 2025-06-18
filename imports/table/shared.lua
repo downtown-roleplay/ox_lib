@@ -1,11 +1,3 @@
---[[
-    https://github.com/overextended/ox_lib
-
-    This file is licensed under LGPL-3.0 or higher <https://www.gnu.org/licenses/lgpl-3.0.en.html>
-
-    Copyright © 2025 Linden <https://github.com/thelindat>
-]]
-
 -- Add additional functions to the standard table library
 
 ---@class oxtable : tablelib
@@ -87,6 +79,71 @@ local function table_deepclone(tbl)
     return tbl
 end
 
+local function table_copy(orig)
+    local orig_type = type(orig)
+    local copy
+    if orig_type == 'table' then
+      copy = {}
+      for orig_key, orig_value in next, orig, nil do
+        copy[table.copy(orig_key)] = table.copy(orig_value)
+      end
+      setmetatable(copy, table.copy(getmetatable(orig)))
+    else -- number, string, boolean, etc
+      copy = orig
+    end
+    return copy
+  end
+  
+
+---comment
+---@param t table
+---@param f function
+---@param options { as_list: boolean, copy: boolean }
+---@return table
+local function table_map(t, f, options)
+    assert(type(t) == "table", "First argument must be a table")
+    assert(type(f) == "function", "Second argument must be a function")
+
+    options = options or {}
+    local use_list = options.as_list or false
+    local make_copy = options.copy or false
+
+    local new_table = {}
+    for k, v in pairs(t) do
+        local result = f(v, k, t)
+        if use_list then
+            table.insert(new_table, result)
+        else
+            new_table[k] = result
+        end
+    end
+
+    return make_copy and table_copy(new_table) or new_table
+end
+
+local function table_filter(t, filterIter, keepKeyAssociation)
+    local out = {}
+    if keepKeyAssociation == nil then keepKeyAssociation = false end
+    for k, v in pairs(t) do
+      if filterIter(v, k, t) then
+        if keepKeyAssociation or type(k) ~= "number" then
+          out[k] = v
+        else
+          out[#out + 1] = v
+        end
+      end
+    end
+    return out
+end
+
+local function table_extend(target, extension)
+	local tbl = table.clone(target)
+	for _, v in ipairs(extension) do
+		table.insert(tbl, v)
+	end
+	return tbl
+end
+
 ---@param t1 table
 ---@param t2 table
 ---@param addDuplicateNumbers boolean? add duplicate number keys together if true, replace if false. Defaults to true.
@@ -111,24 +168,13 @@ local function table_merge(t1, t2, addDuplicateNumbers)
     return t1
 end
 
----@param tbl table
----@return table
----Shuffles the elements of a table randomly using the Fisher-Yates algorithm.
-local function shuffle(tbl)
-    local len = #tbl
-    for i = len, 2, -1 do
-        local j = math.random(i)
-        tbl[i], tbl[j] = tbl[j], tbl[i]
-    end
-    return tbl
-end
-
 table.contains = contains
 table.matches = table_matches
 table.deepclone = table_deepclone
 table.merge = table_merge
-table.shuffle = shuffle
-
+table.map = table_map
+table.extend = table_extend
+table.filter = table_filter
 local frozenNewIndex = function(self) error(('cannot set values on a frozen table (%s)'):format(self), 2) end
 local _rawset = rawset
 
