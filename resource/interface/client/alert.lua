@@ -70,3 +70,7 @@ RegisterNUICallback('closeAlert', function(data, cb)
 end)
 
 RegisterNetEvent('ox_lib:alertDialog', lib.alertDialog)
+
+lib.callback.register('ox_lib:confirmation', function(data)
+    return lib.alertDialog(data)
+end)
