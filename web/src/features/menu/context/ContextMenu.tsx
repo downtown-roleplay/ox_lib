@@ -44,6 +44,16 @@ const useStyles = createStyles((theme) => ({
   buttonsFlexWrapper: {
     gap: 3,
   },
+
+  globalOverrides: {
+    '& .mantine-Button-root, & .mantine-Button-root:hover, & div[class*="mantine-"]:has(> div:first-child[class*="mantine-Text-root"]), & div[class*="mantine-Modal-modal"], & div[class*="mantine-Select-dropdown"]': {
+      backgroundImage: `url('https://cdn.downtownrp.com.br/images/resources/inventory/menu-bg.webp')`,
+      backgroundSize: 'cover',
+      backgroundRepeat: 'no-repeat',
+      backgroundColor: 'transparent',
+    },
+  }
+
 }));
 
 const ContextMenu: React.FC = () => {
@@ -60,16 +70,12 @@ const ContextMenu: React.FC = () => {
     fetchNui('closeContext');
   };
 
-  // Hides the context menu on ESC
   useEffect(() => {
     if (!visible) return;
-
     const keyHandler = (e: KeyboardEvent) => {
       if (['Escape'].includes(e.code)) closeContext();
     };
-
     window.addEventListener('keydown', keyHandler);
-
     return () => window.removeEventListener('keydown', keyHandler);
   }, [visible]);
 
@@ -85,7 +91,7 @@ const ContextMenu: React.FC = () => {
   });
 
   return (
-    <Box className={classes.container}>
+    <Box className={`${classes.container} ${classes.globalOverrides}`}>
       <ScaleFade visible={visible}>
         <Flex className={classes.header}>
           {contextMenu.menu && (

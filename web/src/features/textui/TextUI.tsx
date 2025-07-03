@@ -22,15 +22,20 @@ const useStyles = createStyles((theme, params: { position?: TextUiPosition }) =>
       params.position === 'left-center' ? 'flex-start' : 'center',
   },
   container: {
-    fontSize: 16,
-    padding: 12,
+    fontSize: 18,
+    padding: 20,
     margin: 8,
-    backgroundColor: theme.colors.dark[6],
-    color: theme.colors.dark[0],
-    fontFamily: 'Roboto',
-    borderRadius: theme.radius.sm,
-    boxShadow: theme.shadows.sm,
-  },
+    
+    color: theme.colors.gray[0],
+    fontFamily: 'Typewriter Style',
+    // boxShadow: theme.shadows.sm,
+    backgroundImage: 'url(https://cdn.downtownrp.com.br/images/resources/notify/toast-rtl.png)',
+    // backgroundSize: 'cover', // ou 'contain' dependendo do efeito desejado
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'center',
+    backgroundSize: '100% 100%' ,
+  }
+
 }));
 
 const TextUI: React.FC = () => {
