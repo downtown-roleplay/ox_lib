@@ -15,16 +15,17 @@ interface Props {
 
 const useStyles = createStyles((theme, params: { iconColor?: string }) => ({
   buttonContainer: {
-    backgroundColor: theme.colors.dark[6],
+    backgroundColor: 'rgba(22, 22, 22, 0.85)',
     borderRadius: theme.radius.md,
-    padding: 2,
+    padding: 20,
     height: 60,
     scrollMargin: 8,
     '&:focus': {
-      backgroundColor: theme.colors.dark[4],
+      backgroundColor: 'rgba(255, 51, 51, 0.15)',
       outline: 'none',
     },
   },
+
   iconImage: {
     maxWidth: 32,
   },
@@ -44,17 +45,17 @@ const useStyles = createStyles((theme, params: { iconColor?: string }) => ({
     color: params.iconColor || theme.colors.dark[2],
   },
   label: {
-    color: theme.colors.dark[2],
+    color: theme.colors.dark[1],
     textTransform: 'uppercase',
     fontSize: 12,
     verticalAlign: 'middle',
   },
   chevronIcon: {
     fontSize: 14,
-    color: theme.colors.dark[2],
+    color: theme.colors.dark[1],
   },
   scrollIndexValue: {
-    color: theme.colors.dark[2],
+    color: theme.colors.dark[1],
     textTransform: 'uppercase',
     fontSize: 14,
   },
@@ -67,6 +68,7 @@ const useStyles = createStyles((theme, params: { iconColor?: string }) => ({
     marginBottom: 3,
   },
 }));
+
 
 const ListItem = forwardRef<Array<HTMLDivElement | null>, Props>(({ item, index, scrollIndex, checked }, ref) => {
   const { classes } = useStyles({ iconColor: item.iconColor });
