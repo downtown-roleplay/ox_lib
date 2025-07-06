@@ -103,7 +103,9 @@ const ListItem = forwardRef<Array<HTMLDivElement | null>, Props>(({ item, index,
           <Group position="apart" w="100%">
             <Stack spacing={0} justify="space-between">
               <Text className={classes.label}>{item.label}</Text>
-              <Text>
+              <Text style={{
+                  fontFamily: "'Typewriter Style', sans-serif",
+                }}>
                 {typeof item.values[scrollIndex] === 'object'
                   ? // @ts-ignore for some reason even checking the type TS still thinks it's a string
                     item.values[scrollIndex].label
@@ -120,12 +122,16 @@ const ListItem = forwardRef<Array<HTMLDivElement | null>, Props>(({ item, index,
           </Group>
         ) : item.checked !== undefined ? (
           <Group position="apart" w="100%">
-            <Text>{item.label}</Text>
+            <Text style={{
+              fontFamily: "'Typewriter Style', sans-serif",
+            }}>{item.label}</Text>
             <CustomCheckbox checked={checked}></CustomCheckbox>
           </Group>
         ) : item.progress !== undefined ? (
           <Stack className={classes.progressStack} spacing={0}>
-            <Text className={classes.progressLabel}>{item.label}</Text>
+            <Text style={{
+              fontFamily: "'Typewriter Style', sans-serif",
+            }} className={classes.progressLabel}>{item.label}</Text>
             <Progress
               value={item.progress}
               color={item.colorScheme || 'dark.0'}
@@ -133,7 +139,9 @@ const ListItem = forwardRef<Array<HTMLDivElement | null>, Props>(({ item, index,
             />
           </Stack>
         ) : (
-          <Text>{item.label}</Text>
+          <Text style={{
+            fontFamily: "'Typewriter Style', sans-serif",
+          }}>{item.label}</Text>
         )}
       </Group>
     </Box>
