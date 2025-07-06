@@ -6,7 +6,8 @@ const useStyles = createStyles((theme) => ({
     textAlign: 'center',
     borderTopLeftRadius: theme.radius.md,
     borderTopRightRadius: theme.radius.md,
-    backgroundColor: theme.colors.dark[6],
+    backgroundColor: 'rgba(94, 0, 0, 0.89)',
+    opacity: 0.9,
     height: 60,
     width: 384,
     display: 'flex',
@@ -17,6 +18,7 @@ const useStyles = createStyles((theme) => ({
     fontSize: 24,
     textTransform: 'uppercase',
     fontWeight: 500,
+    fontFamily: "'Typewriter Style', sans-serif !important",
   },
 }));
 
