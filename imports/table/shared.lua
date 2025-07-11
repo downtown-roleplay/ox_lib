@@ -136,6 +136,20 @@ local function table_filter(t, filterIter, keepKeyAssociation)
     return out
 end
 
+local function table_find(t, cb)
+    assert(type(t) == "table", "First argument must be a table")
+    assert(type(cb) == "function", "Second argument must be a function")
+
+    for k, v in pairs(t) do
+        if cb(v, k, t) then
+            return v, k
+        end
+    end
+    
+    return nil
+end
+
+
 local function table_extend(target, extension)
 	local tbl = table.clone(target)
 	for _, v in ipairs(extension) do
@@ -175,6 +189,8 @@ table.merge = table_merge
 table.map = table_map
 table.extend = table_extend
 table.filter = table_filter
+table.find = table_find
+
 local frozenNewIndex = function(self) error(('cannot set values on a frozen table (%s)'):format(self), 2) end
 local _rawset = rawset
 
