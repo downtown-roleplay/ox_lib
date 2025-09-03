@@ -179,6 +179,20 @@ local function table_merge(t1, t2, addDuplicateNumbers)
     return t1
 end
 
+---@param tbl table
+---@return table
+---Shuffles the elements of a table randomly using the Fisher-Yates algorithm.
+local function shuffle(tbl)
+    local len = #tbl
+    for i = len, 2, -1 do
+        local j = math.random(i)
+        tbl[i], tbl[j] = tbl[j], tbl[i]
+    end
+    return tbl
+end
+
+
+
 
 ---@param tbl table
 ---@param fn function(value: any, key: any): any
@@ -195,6 +209,7 @@ table.contains = contains
 table.matches = table_matches
 table.deepclone = table_deepclone
 table.merge = table_merge
+table.shuffle = shuffle
 table.map = table_map
 table.extend = table_extend
 table.filter = table_filter
