@@ -286,6 +286,13 @@
   font-weight: 700;
   font-stretch: normal;
 }
+@font-face {
+    font-family: "rdr";
+    src: url("/fonts/rdr.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
 
 html {
   color-scheme: normal !important;
