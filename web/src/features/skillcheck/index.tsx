@@ -60,16 +60,16 @@ const useStyles = createStyles((theme, params: { difficultyOffset: number }) => 
     },
   },
   indicator: {
-    stroke: '#f5f3f3a9',
+    stroke: '#ffffffff',
     strokeWidth: 5,
     fill: 'transparent',
     r: 50,
     cx: 250,
     cy: 250,
     strokeDasharray: circleCircumference,
-    strokeDashoffset: circleCircumference - 8,
+    strokeDashoffset: circleCircumference - 3,
     filter: 'url(#Downtown)',
-    strokeLinecap: 'round',
+    strokeLinecap: 'butt',
     transition: 'stroke 0.2s',
     '@media (min-height: 1440px)': {
       strokeWidth: 18,
@@ -279,7 +279,7 @@ const SkillCheck: React.FC = () => {
               offset={skillCheck.difficultyOffset}
               multiplier={
                 skillCheck.difficulty === 'easy'
-                  ? 1
+                  ? 0.3
                   : skillCheck.difficulty === 'medium'
                   ? 1.5
                   : skillCheck.difficulty === 'hard'
