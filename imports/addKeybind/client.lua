@@ -26,6 +26,27 @@ if cache.game == 'redm' then
         keybinds = {}
     }
 
+    ---@param name string
+    ---@param inputKey string
+    function lib.removeKeybind(name, inputKey)
+        if not inputKey or not KeyMapper.keybinds[inputKey] then
+            return false, warn(("Cannot remove keybind '%s' because key '%s' is not mapped"):format(name, inputKey or "nil"))
+        end
+
+        if KeyMapper.keybinds[inputKey].commandsList[name] then
+            KeyMapper.keybinds[inputKey].commandsList[name] = nil
+        else
+            return false, warn(("Cannot remove keybind '%s' because it does not exist"):format(name))
+        end
+
+        -- se não sobrar mais comandos nesse inputKey, limpa o nó inteiro
+        if next(KeyMapper.keybinds[inputKey].commandsList) == nil then
+            KeyMapper.keybinds[inputKey] = nil
+        end
+
+        return true
+    end
+
     ---@param data KeybindProps
     ---@return CKeybind | boolean
     function lib.addKeybind(data)
