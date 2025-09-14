@@ -47,6 +47,30 @@ if cache.game == 'redm' then
         return true
     end
 
+    --- Desativa um keybind
+    ---@param name string
+    ---@param inputKey string
+    function lib.disableKeybind(name, inputKey)
+        local keyData = KeyMapper.keybinds[inputKey]
+        if keyData and keyData.commandsList[name] then
+            keyData.commandsList[name].disabled = true
+            return true
+        end
+        return false
+    end
+
+    --- Ativa um keybind
+    ---@param name string
+    ---@param inputKey string
+    function lib.enableKeybind(name, inputKey)
+        local keyData = KeyMapper.keybinds[inputKey]
+        if keyData and keyData.commandsList[name] then
+            keyData.commandsList[name].disabled = false
+            return true
+        end
+        return false
+    end
+
     ---@param data KeybindProps
     ---@return CKeybind | boolean
     function lib.addKeybind(data)
@@ -104,33 +128,33 @@ if cache.game == 'redm' then
 
                 while true do
                     for keyName, keyData in pairs(self.keybinds) do
-                        local rawKey = raw_keys[keyName] -- Usa o mapeamento raw
+                        local rawKey = raw_keys[keyName]
 
                         if rawKey then
                             local isPressed = IsRawKeyPressed(rawKey)
                             local isReleased = IsRawKeyReleased(rawKey)
 
                             for commandString, commandData in pairs(keyData.commandsList) do
-                                local modifier = commandData.modifier and raw_keys[commandData.modifier.key]
+                                -- só executa se não estiver desativado
+                                if not commandData.disabled then
+                                    local modifier = commandData.modifier and raw_keys[commandData.modifier.key]
+                                    local modifierDown = not modifier or IsRawKeyPressed(modifier)
 
-                                local modifierDown = not modifier or IsRawKeyPressed(modifier)
-
-                                -- Evento de pressionar
-                                if isPressed and modifierDown then
-                                    if not commandData._wasPressed then
-                                        commandData._wasPressed = true
-                                        if commandData.onPressed then
-                                            commandData.onPressed()
+                                    if isPressed and modifierDown then
+                                        if not commandData._wasPressed then
+                                            commandData._wasPressed = true
+                                            if commandData.onPressed then
+                                                commandData.onPressed()
+                                            end
                                         end
                                     end
-                                end
 
-                                -- Evento de soltar
-                                if isReleased then
-                                    if commandData._wasPressed then
-                                        commandData._wasPressed = false
-                                        if commandData.onReleased then
-                                            commandData.onReleased()
+                                    if isReleased then
+                                        if commandData._wasPressed then
+                                            commandData._wasPressed = false
+                                            if commandData.onReleased then
+                                                commandData.onReleased()
+                                            end
                                         end
                                     end
                                 end
