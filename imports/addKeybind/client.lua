@@ -46,31 +46,6 @@ if cache.game == 'redm' then
 
         return true
     end
-
-    --- Desativa um keybind
-    ---@param name string
-    ---@param inputKey string
-    function lib.disableKeybind(name, inputKey)
-        local keyData = KeyMapper.keybinds[inputKey]
-        if keyData and keyData.commandsList[name] then
-            keyData.commandsList[name].disabled = true
-            return true
-        end
-        return false
-    end
-
-    --- Ativa um keybind
-    ---@param name string
-    ---@param inputKey string
-    function lib.enableKeybind(name, inputKey)
-        local keyData = KeyMapper.keybinds[inputKey]
-        if keyData and keyData.commandsList[name] then
-            keyData.commandsList[name].disabled = false
-            return true
-        end
-        return false
-    end
-
     ---@param data KeybindProps
     ---@return CKeybind | boolean
     function lib.addKeybind(data)
@@ -90,16 +65,14 @@ if cache.game == 'redm' then
         end
 
         if not KeyMapper.keys[inputKey] then
-            return false,
-                print(("Registering keymapping for command ' %s ' on key ' %s ' failed: the key is missing in the key table"):format(commandString, inputKey))
+            return false, print(("Registering keymapping for command '%s' on key '%s' failed: the key is missing in the key table"):format(commandString, inputKey))
         end
 
         if modifier then
             modifier = modifier:upper()
 
             if not KeyMapper.keys[modifier] then
-                return false,
-                    print(("Registering keymapping for command ' %s ' on key ' %s ' failed: the key is missing in the key table"):format(commandString, modifier))
+                return false, print(("Registering keymapping for command '%s' on key '%s' failed: the key is missing in the key table"):format(commandString, modifier))
             end
         end
 
@@ -107,67 +80,79 @@ if cache.game == 'redm' then
             KeyMapper.keybinds[inputKey] = { key = KeyMapper.keys[inputKey], commandsList = {} }
         end
 
-        KeyMapper.keybinds[inputKey].commandsList[commandString] = {
+        ---@type CKeybind
+        local keybind = {
             description = data.description,
             inputKey = inputKey,
             modifier = modifier,
             onPressed = data.onPressed or nil,
             onReleased = data.onReleased or nil,
+            disabled = data.disabled or false,
         }
-        KeyMapper.keybinds[inputKey].commandsList[commandString].modifier = modifier and { hash = self.keys, key = modifier } or nil
 
-        return KeyMapper.keybinds[inputKey].commandsList[commandString]
+        -- adiciona os métodos no próprio objeto
+        function keybind:disable(toggle)
+            self.disabled = toggle
+        end
+
+        function keybind:isEnabled()
+            return not self.disabled
+        end
+
+        KeyMapper.keybinds[inputKey].commandsList[commandString] = keybind
+        KeyMapper.keybinds[inputKey].commandsList[commandString].modifier =
+            modifier and { hash = self.keys, key = modifier } or nil
+
+        return keybind
     end
 
     function KeyMapper:Thread()
-        CreateThread(function()
-            local Promise = promise.new()
+        local Promise = promise.new()
 
-            CreateThread(function(threadId)
-                Promise:resolve(threadId)
+        CreateThread(function(threadId)
+            Promise:resolve(threadId)
 
-                while true do
-                    for keyName, keyData in pairs(self.keybinds) do
-                        local rawKey = raw_keys[keyName]
+            while true do
+                for keyName, keyData in pairs(self.keybinds) do
+                    local rawKey = raw_keys[keyName]
 
-                        if rawKey then
-                            local isPressed = IsRawKeyPressed(rawKey)
-                            local isReleased = IsRawKeyReleased(rawKey)
+                    if rawKey then
+                        local isPressed = IsRawKeyPressed(rawKey)
+                        local isReleased = IsRawKeyReleased(rawKey)
 
-                            for commandString, commandData in pairs(keyData.commandsList) do
-                                -- só executa se não estiver desativado
-                                if not commandData.disabled then
-                                    local modifier = commandData.modifier and raw_keys[commandData.modifier.key]
-                                    local modifierDown = not modifier or IsRawKeyPressed(modifier)
+                        for commandString, commandData in pairs(keyData.commandsList) do
+                            -- só executa se não estiver desativado
+                            if not commandData.disabled then
+                                local modifier = commandData.modifier and raw_keys[commandData.modifier.key]
+                                local modifierDown = not modifier or IsRawKeyPressed(modifier)
 
-                                    if isPressed and modifierDown then
-                                        if not commandData._wasPressed then
-                                            commandData._wasPressed = true
-                                            if commandData.onPressed then
-                                                commandData.onPressed()
-                                            end
+                                if isPressed and modifierDown then
+                                    if not commandData._wasPressed then
+                                        commandData._wasPressed = true
+                                        if commandData.onPressed then
+                                            commandData.onPressed()
                                         end
                                     end
+                                end
 
-                                    if isReleased then
-                                        if commandData._wasPressed then
-                                            commandData._wasPressed = false
-                                            if commandData.onReleased then
-                                                commandData.onReleased()
-                                            end
+                                if isReleased then
+                                    if commandData._wasPressed then
+                                        commandData._wasPressed = false
+                                        if commandData.onReleased then
+                                            commandData.onReleased()
                                         end
                                     end
                                 end
                             end
                         end
                     end
-
-                    Wait(0)
                 end
-            end)
 
-            return Await(Promise)
+                Wait(0)
+            end
         end)
+
+        return Await(Promise)
     end
 
     KeyMapper:Thread()
