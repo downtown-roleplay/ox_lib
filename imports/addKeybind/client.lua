@@ -23,7 +23,8 @@ local Await = Citizen.Await
 if cache.game == 'redm' then
     local KeyMapper = {
         keys = raw_keys,
-        keybinds = {}
+        keybinds = {},
+        keyStates = {} -- Adiciona rastreamento de estados das teclas
     }
 
     ---@param name string
@@ -39,59 +40,102 @@ if cache.game == 'redm' then
             return false, warn(("Cannot remove keybind '%s' because it does not exist"):format(name))
         end
 
-        -- se não sobrar mais comandos nesse inputKey, limpa o nó inteiro
+        -- Se não sobrar mais comandos nesse inputKey, limpa o nó inteiro
         if next(KeyMapper.keybinds[inputKey].commandsList) == nil then
             KeyMapper.keybinds[inputKey] = nil
+            -- Remove também do rastreamento de estados
+            KeyMapper.keyStates[inputKey] = nil
         end
 
         return true
     end
+
     ---@param data KeybindProps
     ---@return CKeybind | boolean
     function lib.addKeybind(data)
+        -- Validações iniciais
+        if not data or type(data) ~= "table" then
+            return false, warn("Invalid keybind data provided")
+        end
+
+        if not data.name or type(data.name) ~= "string" or data.name == "" then
+            return false, warn("Invalid or missing keybind name")
+        end
+
         local commandString = data.name
         local inputKey = data.defaultKey
         local modifier = data.modifier
+
+        -- Limpa prefixos + ou - do comando
         if commandString:sub(1, 1) == "+" or commandString:sub(1, 1) == "-" then
             commandString = commandString:sub(2, commandString:len())
         end
 
-        if not inputKey then
-            return false, warn("Missing input key for keybind: " .. commandString)
+        if not inputKey or type(inputKey) ~= "string" or inputKey == "" then
+            return false, warn("Missing or invalid input key for keybind: " .. commandString)
         end
 
+        -- Normaliza a tecla para maiúscula
         if inputKey:lower() == inputKey then
             inputKey = inputKey:upper()
         end
 
+        -- Verifica se a tecla existe
         if not KeyMapper.keys[inputKey] then
-            return false, print(("Registering keymapping for command '%s' on key '%s' failed: the key is missing in the key table"):format(commandString, inputKey))
+            return false, warn(("Registering keymapping for command '%s' on key '%s' failed: the key is missing in the key table"):format(commandString, inputKey))
         end
 
+        -- Valida modifier se fornecido
         if modifier then
+            if type(modifier) ~= "string" or modifier == "" then
+                return false, warn(("Invalid modifier for keybind '%s'"):format(commandString))
+            end
+            
             modifier = modifier:upper()
 
             if not KeyMapper.keys[modifier] then
-                return false, print(("Registering keymapping for command '%s' on key '%s' failed: the key is missing in the key table"):format(commandString, modifier))
+                return false, warn(("Registering keymapping for command '%s' on modifier '%s' failed: the modifier key is missing in the key table"):format(commandString, modifier))
             end
         end
 
+        -- Inicializa estruturas se necessário
         if not KeyMapper.keybinds[inputKey] then
             KeyMapper.keybinds[inputKey] = { key = KeyMapper.keys[inputKey], commandsList = {} }
         end
 
+        -- Inicializa estado da tecla
+        if not KeyMapper.keyStates[inputKey] then
+            KeyMapper.keyStates[inputKey] = {
+                wasPressed = false,
+                currentlyPressed = false,
+                lastCheck = 0
+            }
+        end
+
+        -- Verifica se o comando já existe
+        if KeyMapper.keybinds[inputKey].commandsList[commandString] then
+            warn(("Keybind '%s' on key '%s' already exists, overriding"):format(commandString, inputKey))
+        end
+
         ---@type CKeybind
         local keybind = {
-            description = data.description,
+            name = commandString,
+            description = data.description or "No description",
             inputKey = inputKey,
             modifier = modifier,
-            onPressed = data.onPressed or nil,
-            onReleased = data.onReleased or nil,
-            disabled = data.disabled or false,
+            onPressed = type(data.onPressed) == "function" and data.onPressed or nil,
+            onReleased = type(data.onReleased) == "function" and data.onReleased or nil,
+            disabled = data.disabled == true,
+            _wasPressed = false,
+            _currentlyPressed = false
         }
 
-        -- adiciona os métodos no próprio objeto
+        -- Adiciona os métodos no próprio objeto
         function keybind:disable(toggle)
+            if type(toggle) ~= "boolean" then
+                warn(("Invalid toggle value for keybind '%s', expected boolean"):format(self.name))
+                return
+            end
             self.disabled = toggle
         end
 
@@ -99,9 +143,20 @@ if cache.game == 'redm' then
             return not self.disabled
         end
 
+        function keybind:getCurrentKey()
+            return self.inputKey
+        end
+
+        function keybind:isControlPressed()
+            return self._currentlyPressed
+        end
+
+        -- Armazena referência do modifier corretamente
+        if modifier then
+            keybind.modifierData = { hash = KeyMapper.keys[modifier], key = modifier }
+        end
+
         KeyMapper.keybinds[inputKey].commandsList[commandString] = keybind
-        KeyMapper.keybinds[inputKey].commandsList[commandString].modifier =
-            modifier and { hash = self.keys, key = modifier } or nil
 
         return keybind
     end
@@ -111,52 +166,135 @@ if cache.game == 'redm' then
 
         CreateThread(function(threadId)
             Promise:resolve(threadId)
+            
+            local lastFrameTime = GetGameTimer()
 
             while true do
+                local currentTime = GetGameTimer()
+                local deltaTime = currentTime - lastFrameTime
+                lastFrameTime = currentTime
+
+                -- Itera sobre todas as teclas com keybinds
                 for keyName, keyData in pairs(self.keybinds) do
-                    local rawKey = raw_keys[keyName]
+                    local rawKey = self.keys[keyName]
 
                     if rawKey then
-                        local isPressed = IsRawKeyPressed(rawKey)
-                        local isReleased = IsRawKeyReleased(rawKey)
+                        local isCurrentlyPressed = IsRawKeyPressed(rawKey)
+                        local keyState = self.keyStates[keyName]
 
+                        -- Atualiza estado da tecla
+                        local wasPressed = keyState.wasPressed
+                        keyState.currentlyPressed = isCurrentlyPressed
+                        keyState.lastCheck = currentTime
+
+                        -- Detecta mudanças de estado
+                        local justPressed = isCurrentlyPressed and not wasPressed
+                        local justReleased = not isCurrentlyPressed and wasPressed
+
+                        -- Processa comandos para esta tecla
                         for commandString, commandData in pairs(keyData.commandsList) do
-                            -- só executa se não estiver desativado
-                            if not commandData.disabled then
-                                local modifier = commandData.modifier and raw_keys[commandData.modifier.key]
-                                local modifierDown = not modifier or IsRawKeyPressed(modifier)
+                            -- Só executa se não estiver desativado
+                            if commandData and not commandData.disabled then
+                                local modifierPressed = true
+                                
+                                -- Verifica modifier se existir
+                                if commandData.modifier then
+                                    local modifierKey = self.keys[commandData.modifier]
+                                    if modifierKey then
+                                        modifierPressed = IsRawKeyPressed(modifierKey)
+                                    else
+                                        warn(("Modifier key '%s' not found for command '%s'"):format(commandData.modifier, commandString))
+                                        modifierPressed = false
+                                    end
+                                end
 
-                                if isPressed and modifierDown then
+                                -- Atualiza estado do comando
+                                commandData._currentlyPressed = isCurrentlyPressed and modifierPressed
+
+                                -- Executa onPressed quando a tecla é pressionada pela primeira vez
+                                if justPressed and modifierPressed then
                                     if not commandData._wasPressed then
                                         commandData._wasPressed = true
+                                        
+                                        -- Executa callback com tratamento de erro
                                         if commandData.onPressed then
-                                            commandData.onPressed()
+                                            local success, err = pcall(commandData.onPressed, commandData)
+                                            if not success then
+                                                warn(("Error in onPressed callback for '%s': %s"):format(commandString, tostring(err)))
+                                            end
                                         end
                                     end
                                 end
 
-                                if isReleased then
+                                -- Executa onReleased quando a tecla é solta
+                                if justReleased or (not modifierPressed and commandData._wasPressed) then
                                     if commandData._wasPressed then
                                         commandData._wasPressed = false
+                                        
+                                        -- Executa callback com tratamento de erro
                                         if commandData.onReleased then
-                                            commandData.onReleased()
+                                            local success, err = pcall(commandData.onReleased, commandData)
+                                            if not success then
+                                                warn(("Error in onReleased callback for '%s': %s"):format(commandString, tostring(err)))
+                                            end
                                         end
                                     end
                                 end
                             end
                         end
+
+                        -- Atualiza estado anterior da tecla
+                        keyState.wasPressed = isCurrentlyPressed
+                    else
+                        warn(("Raw key not found for keyName: %s"):format(keyName))
                     end
                 end
 
-                Wait(0)
+                -- Controle de frame rate (evita 100% CPU)
+                if deltaTime < 16 then -- ~60 FPS
+                    Wait(0)
+                else
+                    Wait(1) -- Pequeno delay se o frame está muito lento
+                end
             end
         end)
 
         return Await(Promise)
     end
 
+    -- Função para debug/diagnóstico
+    function KeyMapper:GetDebugInfo()
+        local info = {
+            totalKeybinds = 0,
+            keyStates = {},
+            commands = {}
+        }
+        
+        for keyName, keyData in pairs(self.keybinds) do
+            info.keyStates[keyName] = self.keyStates[keyName]
+            for commandName, commandData in pairs(keyData.commandsList) do
+                info.totalKeybinds = info.totalKeybinds + 1
+                info.commands[commandName] = {
+                    key = keyName,
+                    disabled = commandData.disabled,
+                    hasOnPressed = commandData.onPressed ~= nil,
+                    hasOnReleased = commandData.onReleased ~= nil,
+                    wasPressed = commandData._wasPressed,
+                    currentlyPressed = commandData._currentlyPressed
+                }
+            end
+        end
+        
+        return info
+    end
+
+    -- Função para limpar todos os keybinds (útil para debugging)
+    function KeyMapper:ClearAll()
+        self.keybinds = {}
+        self.keyStates = {}
+    end
+
     KeyMapper:Thread()
 end
-
 
 return lib.addKeybind
