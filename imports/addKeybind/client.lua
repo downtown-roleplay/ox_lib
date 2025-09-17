@@ -1,26 +1,54 @@
 ---@class KeybindProps
 ---@field name string
----@field description string
+---@field description? string
 ---@field defaultMapper? string
 ---@field defaultKey? string
 ---@field modifier? string
 ---@field disabled? boolean
----@field disable? fun(self: CKeybind, toggle: boolean)
 ---@field onPressed? fun(self: CKeybind)
 ---@field onReleased? fun(self: CKeybind)
----@field [string] any
 
----@class CKeybind : KeybindProps
----@field currentKey string
----@field disabled boolean
----@field isPressed boolean
+---@class KeyState
+---@field wasPressed boolean
+---@field currentlyPressed boolean
+---@field lastCheck number
+
+---@class ModifierData
 ---@field hash number
----@field getCurrentKey fun(): string
----@field isControlPressed fun(): boolean
+---@field key string
+
+---@class CKeybind
+---@field name string
+---@field description string
+---@field inputKey string
+---@field modifier? string
+---@field onPressed? fun(self: CKeybind)
+---@field onReleased? fun(self: CKeybind)
+---@field disabled boolean
+---@field _wasPressed boolean
+---@field _currentlyPressed boolean
+---@field modifierData? ModifierData
+---@field disable? fun(self: CKeybind, toggle: boolean)
+---@field isEnabled? fun(self: CKeybind): boolean
+---@field getCurrentKey? fun(self: CKeybind): string
+---@field isControlPressed? fun(self: CKeybind): boolean
+
+---@class KeybindData
+---@field key number
+---@field commandsList table<string, CKeybind>
+
+---@class KeyMapperClass
+---@field keys table<string, number>
+---@field keybinds table<string, KeybindData>
+---@field keyStates table<string, KeyState>
+---@field Thread? fun(self: KeyMapperClass): number
+---@field GetDebugInfo? fun(self: KeyMapperClass): table
+---@field ClearAll? fun(self: KeyMapperClass)
 
 local Await = Citizen.Await
 
 if cache.game == 'redm' then
+    ---@type KeyMapperClass
     local KeyMapper = {
         keys = raw_keys,
         keybinds = {},
@@ -28,7 +56,9 @@ if cache.game == 'redm' then
     }
 
     ---@param name string
-    ---@param inputKey string
+    ---@param inputKey? string
+    ---@return boolean success
+    ---@return string? errorMessage
     function lib.removeKeybind(name, inputKey)
         if not inputKey or not KeyMapper.keybinds[inputKey] then
             return false, warn(("Cannot remove keybind '%s' because key '%s' is not mapped"):format(name, inputKey or "nil"))
@@ -51,7 +81,8 @@ if cache.game == 'redm' then
     end
 
     ---@param data KeybindProps
-    ---@return CKeybind | boolean
+    ---@return CKeybind | false
+    ---@return string? errorMessage
     function lib.addKeybind(data)
         -- Validações iniciais
         if not data or type(data) ~= "table" then
@@ -100,11 +131,13 @@ if cache.game == 'redm' then
 
         -- Inicializa estruturas se necessário
         if not KeyMapper.keybinds[inputKey] then
+            ---@type KeybindData
             KeyMapper.keybinds[inputKey] = { key = KeyMapper.keys[inputKey], commandsList = {} }
         end
 
         -- Inicializa estado da tecla
         if not KeyMapper.keyStates[inputKey] then
+            ---@type KeyState
             KeyMapper.keyStates[inputKey] = {
                 wasPressed = false,
                 currentlyPressed = false,
@@ -153,6 +186,7 @@ if cache.game == 'redm' then
 
         -- Armazena referência do modifier corretamente
         if modifier then
+            ---@type ModifierData
             keybind.modifierData = { hash = KeyMapper.keys[modifier], key = modifier }
         end
 
@@ -161,6 +195,7 @@ if cache.game == 'redm' then
         return keybind
     end
 
+    ---@return number threadId
     function KeyMapper:Thread()
         local Promise = promise.new()
 
@@ -263,6 +298,7 @@ if cache.game == 'redm' then
     end
 
     -- Função para debug/diagnóstico
+    ---@return table debugInfo
     function KeyMapper:GetDebugInfo()
         local info = {
             totalKeybinds = 0,
@@ -297,4 +333,5 @@ if cache.game == 'redm' then
     KeyMapper:Thread()
 end
 
+---@return fun(data: KeybindProps): CKeybind | false, string?
 return lib.addKeybind
