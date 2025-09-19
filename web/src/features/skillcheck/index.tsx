@@ -61,10 +61,10 @@ const useStyles = createStyles((theme, params: { difficultyOffset: number }) => 
   },
   indicator: {
     stroke: '#ffffffff',
-    strokeWidth: 5,
+    strokeWidth: 25,
     fill: 'transparent',
     r: 50,
-    cx: 250,
+    cx: 255,
     cy: 250,
     strokeDasharray: circleCircumference,
     strokeDashoffset: circleCircumference - 3,
