@@ -39,13 +39,10 @@ end
 ---@return boolean
 ---Compares if two values are equal, iterating over tables and matching both keys and values.
 local function table_matches(t1, t2)
-    local tabletype1 = table.type(t1)
+	local type1, type2 = type(t1), type(t2)
 
-    if not tabletype1 then return t1 == t2 end
-
-    if tabletype1 ~= table.type(t2) or (tabletype1 == 'array' and #t1 ~= #t2) then
-        return false
-    end
+	if type1 ~= type2 then return false end
+	if type1 ~= 'table' and type2 ~= 'table' then return t1 == t2 end
 
     for k, v1 in pairs(t1) do
         local v2 = t2[k]
@@ -195,6 +192,18 @@ local function shuffle(tbl)
 end
 
 
+
+
+---@param tbl table
+---@param fn function(value: any, key: any): any
+---@return table
+local function map(tbl, fn)
+    local result = {}
+    for k, v in pairs(tbl) do
+        result[k] = fn(v, k)
+    end
+    return result
+end
 
 table.contains = contains
 table.matches = table_matches
