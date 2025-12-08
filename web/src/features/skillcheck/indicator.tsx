@@ -63,25 +63,29 @@ const Indicator: React.FC<Props> = ({
     },
     [multiplier, handleComplete]
   );
+
   const keyHandler = useCallback(
     (e: KeyboardEvent) => {
       const capitalHetaCode = 880;
       const isNonLatin = e.key.charCodeAt(0) >= capitalHetaCode;
-      var convKey = e.key.toLowerCase()
+      let convKey = e.key.toLowerCase();
+
       if (isNonLatin) {
-        if (e.code.indexOf('Key') === 0 && e.code.length === 4) { // i.e. 'KeyW'
+        if (e.code.indexOf('Key') === 0 && e.code.length === 4) {
           convKey = e.code.charAt(3);
         }
 
-        if (e.code.indexOf('Digit') === 0 && e.code.length === 6) { // i.e. 'Digit7'
+        if (e.code.indexOf('Digit') === 0 && e.code.length === 6) {
           convKey = e.code.charAt(5);
         }
       }
+
       setKeyPressed(convKey.toLowerCase());
     },
     [skillCheck]
   );
 
+  // Start / reset animation whenever a new skillcheck starts
   useEffect(() => {
     setIndicatorAngle(-90);
     startTimeRef.current = null;
@@ -107,9 +111,15 @@ const Indicator: React.FC<Props> = ({
     window.removeEventListener('keydown', keyHandler);
     completedRef.current = true;
 
-    if (keyPressed !== skillCheck.key || indicatorAngle < angle || indicatorAngle > angle + offset)
+    if (
+      keyPressed !== skillCheck.key ||
+      indicatorAngle < angle ||
+      indicatorAngle > angle + offset
+    ) {
       handleComplete(false);
-    else handleComplete(true);
+    } else {
+      handleComplete(true);
+    }
 
     setKeyPressed(false);
   }, [
@@ -122,7 +132,12 @@ const Indicator: React.FC<Props> = ({
     handleComplete,
   ]);
 
-  return <circle transform={`rotate(${indicatorAngle}, 250, 250)`} className={className} />;
+  return (
+    <circle
+      transform={`rotate(${indicatorAngle}, 250, 250)`}
+      className={className}
+    />
+  );
 };
 
 export default Indicator;
