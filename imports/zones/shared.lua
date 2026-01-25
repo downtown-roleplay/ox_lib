@@ -277,7 +277,7 @@ local function debugPoly(self)
 end
 
 local function debugSphere(self)
-    DrawMarker(28, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, self.radius, self.radius, self.radius, self.debugColour.r,
+    DrawMarker(0x50638AB9, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, self.radius, self.radius, self.radius, self.debugColour.r,
         ---@diagnostic disable-next-line: param-type-mismatch
         self.debugColour.g, self.debugColour.b, self.debugColour.a, false, false, 0, false, false, false, false)
 end
