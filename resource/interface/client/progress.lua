@@ -98,7 +98,6 @@ local function startProgress(data)
     end
 
     local disable = data.disable
-    local startTime = GetGameTimer()
 
     while progress do
         if disable then
