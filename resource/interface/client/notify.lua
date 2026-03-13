@@ -27,21 +27,82 @@
 
 local settings = require 'resource.settings'
 
----`client`
+---client
 ---@param data NotifyProps
 ---@diagnostic disable-next-line: duplicate-set-field
 function lib.notify(data)
     local sound = settings.notification_audio and data.sound
     data.sound = nil
-    data.position = data.position or settings.notification_position
 
-    SendNUIMessage({
-        action = 'notify',
-        data = data
-    })
+    local positionMap = {
+        ["top"] = "top-center",
+        ["bottom"] = "bottom-right",
+        ["top-left"] = "top-left",
+        ["top-right"] = "top-right",
+        ["bottom-left"] = "bottom-left",
+        ["bottom-right"] = "bottom-right",
+        ["center-left"] = "middle-left",   
+        ["center-right"] = "middle-right", 
+        ["middle"] = "middle-center",      
+        ["center"] = "middle-center",      
+    }
 
+local placement = positionMap[data.position] or "middle-left"
+
+    local templateMap = {
+        error = "ERROR",
+        success = "SUCCESS",
+        info = "INFO",
+        warning = "INFO"
+    }
+
+    local iconTypeMap = {
+        success = "tick",
+        error = "cross",
+        info = "warning",
+        warning = "warning"
+    }
+
+    local template = data.type and templateMap[string.lower(data.type)]
+
+    local icon = nil
+
+    if not template then
+        if data.icon then
+            if type(data.icon) == "string" then
+                icon = iconTypeMap[data.icon:lower()] or data.icon
+            elseif type(data.icon) == "table" and type(data.icon[2]) == "string" then
+                icon = iconTypeMap[data.icon[2]:lower()] or data.icon[2]
+            end
+        elseif data.type then
+            icon = iconTypeMap[data.type:lower()] or "warning"
+        else
+            icon = "warning"
+        end
+    end
+
+    local notifyOptions = {
+        title = data.title or "Notification",
+        description = data.description or "",
+        duration = data.duration or 5000,
+        placement = placement,
+        progress = {
+            enabled = true,
+            type = "bar",
+            color = (data.type == "error" and "#ff4444")
+                 or (data.type == "success" and "#44ff44")
+                 or "#aaaaaa"
+        }
+    }
+
+    if icon then
+        notifyOptions.icon = icon
+    end
+
+    TriggerEvent("bln_notify:send", notifyOptions, template)
+
+    -- Sound handling
     if not sound then return end
-
     if sound.bank then lib.requestAudioBank(sound.bank) end
 
     local soundId = GetSoundId()
