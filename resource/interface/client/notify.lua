@@ -47,13 +47,14 @@ function lib.notify(data)
         ["center"] = "middle-center",      
     }
 
-local placement = positionMap[data.position] or "middle-left"
+    local placement = positionMap[data.position] or "middle-left"
 
     local templateMap = {
         error = "ERROR",
         success = "SUCCESS",
         info = "INFO",
-        warning = "INFO"
+        warning = "INFO",
+        tip = "TIP"
     }
 
     local iconTypeMap = {
@@ -66,7 +67,6 @@ local placement = positionMap[data.position] or "middle-left"
     local template = data.type and templateMap[string.lower(data.type)]
 
     local icon = nil
-
     if not template then
         if data.icon then
             if type(data.icon) == "string" then
@@ -79,10 +79,15 @@ local placement = positionMap[data.position] or "middle-left"
         else
             icon = "warning"
         end
+    else
+        if data.icon then
+            local imageCdn = 'https://cdn.downtownrp.com.br/images/resources/inventory/%s.png'
+            icon = (imageCdn):format(data.icon)
+        end
     end
 
     local notifyOptions = {
-        title = data.title or "Notification",
+        title = data.title or "Aviso!",
         description = data.description or "",
         duration = data.duration or 5000,
         placement = placement,
