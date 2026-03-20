@@ -98,6 +98,7 @@ local function startProgress(data)
     end
 
     local disable = data.disable
+    local startTime = GetGameTimer()
 
     while progress do
         if disable then
@@ -153,8 +154,9 @@ local function startProgress(data)
     end
 
     playerState.invBusy = false
+    local duration = progress ~= false and GetGameTimer() - startTime + 100 -- give slight leeway
 
-    if progress == false then
+    if progress == false or duration <= data.duration then
         SendNUIMessage({ action = 'progressCancel' })
         return false
     end
@@ -217,7 +219,9 @@ RegisterNUICallback('progressComplete', function(data, cb)
     progress = nil
 end)
 
-RegisterCommand('cancelar', function() if progress?.canCancel then progress = false end end)
+RegisterCommand('cancelar', function()
+    if progress?.canCancel then progress = false end
+end)
 
 if isFivem then
     RegisterKeyMapping('cancelprogress', locale('cancel_progress'), 'keyboard', 'x')

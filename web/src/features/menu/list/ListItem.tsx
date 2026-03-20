@@ -21,11 +21,10 @@ const useStyles = createStyles((theme, params: { iconColor?: string }) => ({
     height: 60,
     scrollMargin: 8,
     '&:focus': {
-      backgroundColor: 'rgba(255, 51, 51, 0.15)',
+      backgroundColor: theme.colors.dark[4],
       outline: 'none',
     },
   },
-
   iconImage: {
     maxWidth: 32,
   },
@@ -68,7 +67,6 @@ const useStyles = createStyles((theme, params: { iconColor?: string }) => ({
     marginBottom: 3,
   },
 }));
-
 
 const ListItem = forwardRef<Array<HTMLDivElement | null>, Props>(({ item, index, scrollIndex, checked }, ref) => {
   const { classes } = useStyles({ iconColor: item.iconColor });

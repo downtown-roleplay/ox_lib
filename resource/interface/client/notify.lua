@@ -108,6 +108,7 @@ function lib.notify(data)
 
     -- Sound handling
     if not sound then return end
+
     if sound.bank then lib.requestAudioBank(sound.bank) end
 
     local soundId = GetSoundId()

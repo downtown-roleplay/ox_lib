@@ -70,12 +70,16 @@ const ContextMenu: React.FC = () => {
     fetchNui('closeContext');
   };
 
+  // Hides the context menu on ESC
   useEffect(() => {
     if (!visible) return;
+
     const keyHandler = (e: KeyboardEvent) => {
       if (['Escape'].includes(e.code)) closeContext();
     };
+
     window.addEventListener('keydown', keyHandler);
+
     return () => window.removeEventListener('keydown', keyHandler);
   }, [visible]);
 
