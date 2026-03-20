@@ -79,6 +79,7 @@ if cache.game == 'redm' then
 
         return true
     end
+
     ---@param data KeybindProps
     ---@return CKeybind | false
     ---@return string? errorMessage
