@@ -79,31 +79,6 @@ if cache.game == 'redm' then
 
         return true
     end
-
-    --- Desativa um keybind
-    ---@param name string
-    ---@param inputKey string
-    function lib.disableKeybind(name, inputKey)
-        local keyData = KeyMapper.keybinds[inputKey]
-        if keyData and keyData.commandsList[name] then
-            keyData.commandsList[name].disabled = true
-            return true
-        end
-        return false
-    end
-
-    --- Ativa um keybind
-    ---@param name string
-    ---@param inputKey string
-    function lib.enableKeybind(name, inputKey)
-        local keyData = KeyMapper.keybinds[inputKey]
-        if keyData and keyData.commandsList[name] then
-            keyData.commandsList[name].disabled = false
-            return true
-        end
-        return false
-    end
-
     ---@param data KeybindProps
     ---@return CKeybind | false
     ---@return string? errorMessage
@@ -283,6 +258,7 @@ if cache.game == 'redm' then
                                             end
                                         end
                                     end
+                                end
 
                                 -- Executa onReleased quando a tecla é solta
                                 if justReleased or (not modifierPressed and commandData._wasPressed) then
