@@ -1,0 +1,298 @@
+/* =========================================================
+   AlertDialog.module.css — Tema Red Dead Redemption 2
+   Paleta: madeira escura, couro, ouro envelhecido
+   ========================================================= */
+
+/* ---- Fontes ---- */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+
+/* ---- Variáveis de tema ---- */
+:root {
+  --rdr2-brown-darkest:  #0e0904;
+  --rdr2-brown-dark:     #1c1208;
+  --rdr2-brown-mid:      #2b1d0b;
+  --rdr2-brown-surface:  #3d2a10;
+  --rdr2-brown-light:    #5a3a0c;
+  --rdr2-gold-deep:      #6b4d1e;
+  --rdr2-gold-mid:       #8a6630;
+  --rdr2-gold-bright:    #c9a84c;
+  --rdr2-gold-light:     #e8c97a;
+  --rdr2-gold-pale:      #f0d890;
+  --rdr2-text-body:      #c8a96a;
+  --rdr2-text-muted:     #9a7840;
+  --rdr2-border:         #7a5c2a;
+  --rdr2-border-inner:   #3d2a10;
+}
+
+/* ---- Overlay ---- */
+.overlay {
+  background: rgba(99, 99, 99, 0.356) !important;
+  backdrop-filter: blur(2px);
+}
+
+/* ---- Modal root ---- */
+.root {
+  font-family: 'Crimson Text', Georgia, 'Times New Roman', serif !important;
+}
+
+/* ---- Modal content (o "papel") ---- */
+.content {
+  position: relative !important;
+  background: linear-gradient(
+    160deg,
+    var(--rdr2-brown-mid) 0%,
+    var(--rdr2-brown-dark) 60%,
+    #231810 100%
+  ) !important;
+  border: 1px solid var(--rdr2-border) !important;
+  box-shadow:
+    0 0 0 1px var(--rdr2-border-inner),
+    0 8px 48px rgba(0, 0, 0, 0.85),
+    inset 0 0 80px rgba(0, 0, 0, 0.45) !important;
+  border-radius: 2px !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+/* ---- Body (reset de padding do Mantine) ---- */
+.body {
+  padding: 0 !important;
+}
+
+/* ========== Ornamentos de canto ========== */
+.cornerTL,
+.cornerTR,
+.cornerBL,
+.cornerBR {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Usamos pseudo-elementos para desenhar os cantos */
+.cornerTL::before,
+.cornerTL::after,
+.cornerTR::before,
+.cornerTR::after,
+.cornerBL::before,
+.cornerBL::after,
+.cornerBR::before,
+.cornerBR::after {
+  content: '';
+  position: absolute;
+  background: var(--rdr2-gold-bright);
+}
+
+/* Quadradinho de ouro */
+.cornerTL::before { top: -1px; left: -1px; width: 5px; height: 5px; }
+.cornerTR::before { top: -1px; right: -1px; width: 5px; height: 5px; }
+.cornerBL::before { bottom: -1px; left: -1px; width: 5px; height: 5px; }
+.cornerBR::before { bottom: -1px; right: -1px; width: 5px; height: 5px; }
+
+/* Linha vertical do canto */
+.cornerTL::after { top: -1px; left: -1px; width: 1.5px; height: 18px; background: var(--rdr2-gold-bright); }
+.cornerTR::after { top: -1px; right: -1px; width: 1.5px; height: 18px; background: var(--rdr2-gold-bright); }
+.cornerBL::after { bottom: -1px; left: -1px; width: 1.5px; height: 18px; background: var(--rdr2-gold-bright); }
+.cornerBR::after { bottom: -1px; right: -1px; width: 1.5px; height: 18px; background: var(--rdr2-gold-bright); }
+
+/* Linha horizontal do canto (via box-shadow) */
+.cornerTL { box-shadow: -1px -1px 0 0 var(--rdr2-gold-bright); }
+.cornerTR { box-shadow:  1px -1px 0 0 var(--rdr2-gold-bright); }
+.cornerBL { box-shadow: -1px  1px 0 0 var(--rdr2-gold-bright); }
+.cornerBR { box-shadow:  1px  1px 0 0 var(--rdr2-gold-bright); }
+
+.cornerTL { top: -1px; left: -1px; }
+.cornerTR { top: -1px; right: -1px; }
+.cornerBL { bottom: -1px; left: -1px; }
+.cornerBR { bottom: -1px; right: -1px; }
+
+/* ========== Cabeçalho ========== */
+.header {
+  background: linear-gradient(
+    180deg,
+    var(--rdr2-brown-surface) 0%,
+    var(--rdr2-brown-mid) 100%
+  ) !important;
+  border-bottom: 1px solid var(--rdr2-gold-deep) !important;
+  padding: 1.1rem 1.75rem 0.9rem !important;
+  text-align: center !important;
+}
+
+.headerLine {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--rdr2-gold-bright), transparent);
+  margin: 0.5rem 0;
+}
+
+.title {
+  font-family: 'Cinzel', 'Palatino Linotype', 'Book Antiqua', Palatino, serif !important;
+  font-size: 1.05rem !important;
+  font-weight: 600 !important;
+  color: var(--rdr2-gold-light) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.14em !important;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9) !important;
+  margin: 0 !important;
+  line-height: 1.3 !important;
+}
+
+/* ========== Divisórias com ícone ========== */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.45rem 1.5rem;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--rdr2-gold-deep));
+}
+
+.divider::after {
+  background: linear-gradient(270deg, transparent, var(--rdr2-gold-deep));
+}
+
+.dividerIcon {
+  color: var(--rdr2-gold-mid);
+  font-size: 10px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* ========== Conteúdo ========== */
+.bodyContent {
+  padding: 0.5rem 1.75rem 0.75rem !important;
+  text-align: center !important;
+}
+
+.contentText {
+  font-family: 'Crimson Text', Georgia, 'Times New Roman', serif !important;
+  font-size: 1.05rem !important;
+  line-height: 1.65 !important;
+  color: var(--rdr2-text-body) !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7) !important;
+}
+
+/* Markdown dentro do conteúdo */
+.contentText p { margin: 0 0 0.4em; }
+.contentText strong { color: var(--rdr2-gold-light); font-weight: 600; }
+.contentText em { font-style: italic; color: var(--rdr2-gold-bright); }
+.contentText code {
+  font-family: 'Courier New', monospace;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--rdr2-gold-deep);
+  padding: 1px 5px;
+  border-radius: 2px;
+  font-size: 0.9em;
+  color: var(--rdr2-gold-bright);
+}
+
+/* ========== Rodapé ========== */
+.footer {
+  padding: 0.6rem 1.5rem 1.2rem !important;
+  gap: 12px !important;
+}
+
+/* ========== Botões ========== */
+.btn {
+  font-family: 'Cinzel', 'Palatino Linotype', Palatino, serif !important;
+  font-size: 0.72rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.13em !important;
+  text-transform: uppercase !important;
+  padding: 0.5rem 1.6rem !important;
+  min-width: 115px !important;
+  height: auto !important;
+  border-radius: 1px !important;
+  border-width: 1px !important;
+  border-style: solid !important;
+  transition: all 0.15s ease !important;
+  cursor: pointer !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+/* Brilho interno sutil */
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+}
+
+/* --- Botão Confirmar (ouro) --- */
+.btnConfirm {
+  background: linear-gradient(
+    180deg,
+    var(--rdr2-brown-light) 0%,
+    #4a2e08 100%
+  ) !important;
+  border-color: var(--rdr2-gold-bright) !important;
+  color: var(--rdr2-gold-pale) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(201, 168, 76, 0.25),
+    0 2px 10px rgba(0, 0, 0, 0.6) !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8) !important;
+}
+
+.btnConfirm:hover {
+  background: linear-gradient(
+    180deg,
+    #8f6020 0%,
+    #5e3a0c 100%
+  ) !important;
+  border-color: var(--rdr2-gold-light) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(201, 168, 76, 0.35),
+    0 2px 14px rgba(0, 0, 0, 0.7),
+    0 0 16px rgba(201, 168, 76, 0.12) !important;
+}
+
+.btnConfirm:active {
+  transform: translateY(1px) !important;
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* --- Botão Cancelar (escuro/sutil) --- */
+.btnCancel {
+  background: linear-gradient(
+    180deg,
+    #2a1e0e 0%,
+    var(--rdr2-brown-dark) 100%
+  ) !important;
+  border-color: var(--rdr2-gold-deep) !important;
+  color: var(--rdr2-text-muted) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(90, 64, 32, 0.18),
+    0 2px 8px rgba(0, 0, 0, 0.5) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7) !important;
+}
+
+.btnCancel:hover {
+  background: linear-gradient(
+    180deg,
+    #351e0e 0%,
+    #241508 100%
+  ) !important;
+  border-color: #7a5a28 !important;
+  color: var(--rdr2-text-body) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(120, 90, 40, 0.2),
+    0 2px 10px rgba(0, 0, 0, 0.6) !important;
+}
+
+.btnCancel:active {
+  transform: translateY(1px) !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5) !important;
+}
