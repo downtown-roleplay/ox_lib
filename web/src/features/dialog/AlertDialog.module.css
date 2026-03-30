@@ -25,10 +25,10 @@
 }
 
 /* ---- Overlay ---- */
-.overlay {
+/* .overlay {
   background: rgba(99, 99, 99, 0.356) !important;
   backdrop-filter: blur(2px);
-}
+} */
 
 /* ---- Modal root ---- */
 .root {
