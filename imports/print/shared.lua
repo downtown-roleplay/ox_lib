@@ -18,7 +18,7 @@ local printLevel = {
 local levelPrefixes = {
     '^1[ERROR]',
     '^3[WARN]',
-    '^7[INFO]',
+    '^4[INFO]',
     '^4[VERBOSE]',
     '^6[DEBUG]',
 }
