@@ -21,58 +21,96 @@ const useStyles = createStyles((theme, params: { disabled?: boolean; readOnly?: 
   },
   label: {
     width: '100%',
-    color: params.disabled ? theme.colors.dark[3] : theme.colors.dark[0],
+    color: params.disabled ? 'var(--dt-text-dim)' : 'var(--dt-text)',
     whiteSpace: 'pre-wrap',
   },
   button: {
     height: 'fit-content',
     width: '100%',
-    padding: 10,
+    padding: '15px 18px',
+    borderRadius: 0,
+    border: 'none',
+    borderBottom: '1px solid var(--dt-hairline)',
+    borderLeft: '2px solid transparent',
+    backgroundColor: 'transparent',
+    backgroundImage: 'none',
+    transition: 'background-color 120ms, border-color 120ms',
     '&:hover': {
-      backgroundColor: params.readOnly ? theme.colors.dark[6] : undefined,
+      backgroundColor: params.readOnly ? 'transparent' : 'var(--dt-select)',
+      borderLeftColor: params.readOnly ? 'transparent' : 'var(--dt-accent-light)',
       cursor: params.readOnly ? 'unset' : 'pointer',
     },
     '&:active': {
-      transform: params.readOnly ? 'unset' : undefined,
+      transform: 'none',
+      backgroundColor: params.readOnly ? 'transparent' : 'var(--dt-select-strong)',
+    },
+    '&[data-disabled]': {
+      backgroundColor: 'transparent',
+      opacity: 0.55,
     },
   },
   iconImage: {
-    maxWidth: '25px',
+    maxWidth: '22px',
+  },
+  title: {
+    fontFamily: 'var(--dt-font-display)',
+    fontSize: 18,
+    letterSpacing: '0.05em',
+    lineHeight: 1.3,
+    overflowWrap: 'break-word',
+    textShadow: 'var(--dt-shadow-text)',
   },
   description: {
-    color: params.disabled ? theme.colors.dark[3] : theme.colors.dark[2],
-    fontSize: 12,
+    color: params.disabled ? 'var(--dt-text-dim)' : 'var(--dt-text-muted)',
+    fontFamily: 'var(--dt-font-body)',
+    fontWeight: 300,
+    fontSize: 15,
+    lineHeight: 1.45,
   },
   dropdown: {
-    padding: 10,
-    color: theme.colors.dark[0],
-    fontSize: 14,
-    maxWidth: 256,
+    padding: '10px 12px',
+    color: 'var(--dt-text)',
+    fontFamily: 'var(--dt-font-body)',
+    fontSize: 15,
+    maxWidth: 300,
     width: 'fit-content',
-    border: 'none',
+    backgroundColor: 'var(--dt-panel-solid)',
+    border: '1px solid var(--dt-hairline-strong)',
+    borderRadius: 2,
+    boxShadow: 'var(--dt-shadow-panel)',
   },
   buttonStack: {
-    gap: 4,
+    gap: 3,
     flex: '1',
   },
   buttonGroup: {
-    gap: 4,
+    gap: 10,
     flexWrap: 'nowrap',
   },
   buttonIconContainer: {
-    width: 25,
-    height: 25,
+    width: 26,
+    height: 26,
+    fontSize: 20,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  buttonTitleText: {
-    overflowWrap: 'break-word',
+    color: params.disabled ? 'var(--dt-text-dim)' : 'var(--dt-accent-light)',
   },
   buttonArrowContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: 25,
-    height: 25,
+    width: 20,
+    height: 20,
+    fontSize: 15,
+    color: 'var(--dt-text-dim)',
+  },
+  progress: {
+    backgroundColor: 'rgba(0, 0, 0, 0.55)',
+    border: '1px solid var(--dt-hairline)',
+    borderRadius: 0,
+    marginTop: 4,
+  },
+  progressBar: {
+    backgroundColor: 'var(--dt-accent-light)',
   },
 }));
 
@@ -115,14 +153,13 @@ const ContextButton: React.FC<{
                           <LibIcon
                             icon={button.icon as IconProp}
                             fixedWidth
-                            size="lg"
                             style={{ color: button.iconColor }}
                             animation={button.iconAnimation}
                           />
                         )}
                       </Stack>
                     )}
-                    <Text className={classes.buttonTitleText}>
+                    <Text className={classes.title}>
                       <ReactMarkdown components={MarkdownComponents}>{button.title || buttonKey}</ReactMarkdown>
                     </Text>
                   </Group>
@@ -133,7 +170,16 @@ const ContextButton: React.FC<{
                   </Text>
                 )}
                 {button.progress !== undefined && (
-                  <Progress value={button.progress} size="sm" color={button.colorScheme || 'dark.3'} />
+                  <Progress
+                    value={button.progress}
+                    size="sm"
+                    color={button.colorScheme}
+                    classNames={
+                      button.colorScheme
+                        ? { root: classes.progress }
+                        : { root: classes.progress, bar: classes.progressBar }
+                    }
+                  />
                 )}
               </Stack>
               {(button.menu || button.arrow) && button.arrow !== false && (
@@ -161,7 +207,12 @@ const ContextButton: React.FC<{
                     <Progress
                       value={metadata.progress}
                       size="sm"
-                      color={metadata.colorScheme || button.colorScheme || 'dark.3'}
+                      color={metadata.colorScheme || button.colorScheme}
+                      classNames={
+                        metadata.colorScheme || button.colorScheme
+                          ? { root: classes.progress }
+                          : { root: classes.progress, bar: classes.progressBar }
+                      }
                     />
                   )}
                 </>

@@ -16,6 +16,7 @@ import DateField from './components/fields/date';
 import TextareaField from './components/fields/textarea';
 import TimeField from './components/fields/time';
 import dayjs from 'dayjs';
+import classes from './InputDialog.module.css';
 
 export type FormValues = {
   test: {
@@ -104,7 +105,13 @@ const InputDialog: React.FC = () => {
         closeOnEscape={fields.options?.allowCancel !== false}
         closeOnClickOutside={false}
         size={fields.options?.size || 'xs'}
-        styles={{ title: { textAlign: 'center', width: '100%', fontSize: 18 } }}
+        classNames={{
+          modal: classes.content,
+          overlay: classes.overlay,
+          header: classes.header,
+          title: classes.title,
+          body: classes.body,
+        }}
         title={fields.heading}
         withCloseButton={false}
         overlayOpacity={0.5}
@@ -155,13 +162,14 @@ const InputDialog: React.FC = () => {
               <Button
                 uppercase
                 variant="default"
+                className={`${classes.btn} ${classes.btnCancel}`}
                 onClick={() => handleClose()}
                 mr={3}
                 disabled={fields.options?.allowCancel === false}
               >
                 {locale.ui.cancel}
               </Button>
-              <Button uppercase variant="light" type="submit">
+              <Button uppercase variant="default" className={`${classes.btn} ${classes.btnConfirm}`} type="submit">
                 {locale.ui.confirm}
               </Button>
             </Group>

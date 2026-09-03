@@ -9,40 +9,53 @@ import type { RadialMenuItem } from '../../../typings';
 import { useLocales } from '../../../providers/LocaleProvider';
 import LibIcon from '../../../components/LibIcon';
 
-const useStyles = createStyles((theme) => ({
+const useStyles = createStyles(() => ({
   wrapper: {
     position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
+    filter: 'drop-shadow(0 10px 30px rgba(0, 0, 0, 0.65))',
   },
   sector: {
-    fill: theme.colors.dark[6],
-    color: theme.colors.dark[0],
+    fill: 'var(--dt-panel)',
+    stroke: 'var(--dt-hairline-strong)',
+    strokeWidth: 1,
+    transition: 'fill 120ms',
 
     '&:hover': {
-      fill: theme.fn.primaryColor(),
+      fill: 'var(--dt-select)',
       cursor: 'pointer',
-      '> g > text, > g > svg > path': {
-        fill: '#fff',
+      '> g > text': {
+        fill: 'var(--dt-text)',
+      },
+      '> g > svg > path': {
+        fill: 'var(--dt-accent-light)',
       },
     },
     '> g > text': {
-      fill: theme.colors.dark[0],
+      fill: 'var(--dt-text-muted)',
+      fontFamily: 'var(--dt-font-display)',
+      letterSpacing: '0.08em',
       strokeWidth: 0,
+    },
+    '> g > svg > path': {
+      fill: 'var(--dt-accent-light)',
     },
   },
   backgroundCircle: {
-    fill: theme.colors.dark[6],
+    fill: 'var(--dt-panel)',
+    stroke: 'var(--dt-hairline-strong)',
+    strokeWidth: 1,
   },
   centerCircle: {
-    fill: theme.fn.primaryColor(),
-    color: '#fff',
-    stroke: theme.colors.dark[6],
-    strokeWidth: 4,
+    fill: 'var(--dt-panel-solid)',
+    stroke: 'var(--dt-rule)',
+    strokeWidth: 1,
     '&:hover': {
       cursor: 'pointer',
-      fill: theme.colors[theme.primaryColor][theme.fn.primaryShade() - 1],
+      fill: 'var(--dt-select-strong)',
+      stroke: 'var(--dt-accent-light)',
     },
   },
   centerIconContainer: {
@@ -53,14 +66,16 @@ const useStyles = createStyles((theme) => ({
     pointerEvents: 'none',
   },
   centerIcon: {
-    color: '#fff',
+    color: 'var(--dt-accent-light)',
   },
 }));
 
 const calculateFontSize = (text: string): number => {
-  if (text.length > 20) return 10;
-  if (text.length > 15) return 12;
-  return 13;
+  // Rótulo longo encosta na divisória do setor, então a escala cede antes disso.
+  if (text.length > 20) return 13;
+  if (text.length > 15) return 14;
+  if (text.length > 10) return 15;
+  return 16.5;
 };
 
 const splitTextIntoLines = (text: string, maxCharPerLine: number = 15): string[] => {
@@ -208,7 +223,6 @@ const RadialMenu: React.FC = () => {
                     <text
                       x={iconX}
                       y={iconY + (splitTextIntoLines(item.label, 15).length > 2 ? 15 : 28)}
-                      fill="#fff"
                       textAnchor="middle"
                       fontSize={calculateFontSize(item.label)}
                       pointerEvents="none"
@@ -245,8 +259,7 @@ const RadialMenu: React.FC = () => {
               icon={!menu.sub && menu.page < 2 ? 'xmark' : 'arrow-rotate-left'}
               fixedWidth
               className={classes.centerIcon}
-              color="#fff"
-              size="2x"
+              size="lg"
             />
           </div>
         </ScaleFade>
