@@ -13,47 +13,45 @@ const openMenu = (id: string | undefined) => {
   fetchNui<ContextMenuProps>('openContext', { id: id, back: true });
 };
 
-const useStyles = createStyles((theme) => ({
+const useStyles = createStyles(() => ({
   container: {
     position: 'absolute',
     top: '15%',
     right: '25%',
-    width: 320,
-    height: 580,
+    width: 410,
+    fontFamily: 'var(--dt-font-body)',
+  },
+  panel: {
+    backgroundColor: 'var(--dt-panel)',
+    border: '1px solid var(--dt-hairline-strong)',
+    borderRadius: 2,
+    boxShadow: 'var(--dt-shadow-panel)',
+    overflow: 'hidden',
   },
   header: {
-    justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 10,
-    gap: 6,
-  },
-  titleContainer: {
-    borderRadius: 4,
-    flex: '1 85%',
-    backgroundColor: theme.colors.dark[6],
+    justifyContent: 'space-between',
+    gap: 4,
+    padding: '13px 10px 11px',
   },
   titleText: {
-    color: theme.colors.dark[0],
-    padding: 6,
+    flex: 1,
     textAlign: 'center',
+    color: 'var(--dt-text)',
+    fontFamily: 'var(--dt-font-display)',
+    fontSize: 18,
+    textTransform: 'uppercase',
+    letterSpacing: '0.18em',
+    textShadow: 'var(--dt-shadow-text)',
   },
   buttonsContainer: {
-    height: 560,
+    maxHeight: 540,
     overflowY: 'scroll',
+    '::-webkit-scrollbar': { display: 'none' },
   },
   buttonsFlexWrapper: {
-    gap: 3,
+    gap: 0,
   },
-
-  globalOverrides: {
-    '& .mantine-Button-root, & .mantine-Button-root:hover, & div[class*="mantine-"]:has(> div:first-child[class*="mantine-Text-root"]), & div[class*="mantine-Modal-modal"], & div[class*="mantine-Select-dropdown"]': {
-      backgroundImage: `url('https://cdn.downtownrp.com.br/images/resources/inventory/menu-bg.webp')`,
-      backgroundSize: 'cover',
-      backgroundRepeat: 'no-repeat',
-      backgroundColor: 'transparent',
-    },
-  }
-
 }));
 
 const ContextMenu: React.FC = () => {
@@ -95,25 +93,29 @@ const ContextMenu: React.FC = () => {
   });
 
   return (
-    <Box className={`${classes.container} ${classes.globalOverrides}`}>
+    <Box className={classes.container}>
       <ScaleFade visible={visible}>
-        <Flex className={classes.header}>
-          {contextMenu.menu && (
-            <HeaderButton icon="chevron-left" iconSize={16} handleClick={() => openMenu(contextMenu.menu)} />
-          )}
-          <Box className={classes.titleContainer}>
+        <Box className={`${classes.panel} dt-grain`}>
+          <Flex className={classes.header}>
+            <HeaderButton
+              icon="chevron-left"
+              iconSize={18}
+              hidden={!contextMenu.menu}
+              handleClick={() => openMenu(contextMenu.menu)}
+            />
             <Text className={classes.titleText}>
               <ReactMarkdown components={MarkdownComponents}>{contextMenu.title}</ReactMarkdown>
             </Text>
+            <HeaderButton icon="xmark" canClose={contextMenu.canClose} iconSize={18} handleClick={closeContext} />
+          </Flex>
+          <div className="dt-rule" />
+          <Box className={classes.buttonsContainer}>
+            <Stack className={classes.buttonsFlexWrapper}>
+              {Object.entries(contextMenu.options).map((option, index) => (
+                <ContextButton option={option} key={`context-item-${index}`} />
+              ))}
+            </Stack>
           </Box>
-          <HeaderButton icon="xmark" canClose={contextMenu.canClose} iconSize={18} handleClick={closeContext} />
-        </Flex>
-        <Box className={classes.buttonsContainer}>
-          <Stack className={classes.buttonsFlexWrapper}>
-            {Object.entries(contextMenu.options).map((option, index) => (
-              <ContextButton option={option} key={`context-item-${index}`} />
-            ))}
-          </Stack>
         </Box>
       </ScaleFade>
     </Box>

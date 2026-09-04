@@ -1,45 +1,43 @@
-import { Button, createStyles } from '@mantine/core';
+import { createStyles, UnstyledButton } from '@mantine/core';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import LibIcon from '../../../../components/LibIcon';
 
 interface Props {
   icon: IconProp;
   canClose?: boolean;
+  hidden?: boolean;
   iconSize: number;
   handleClick: () => void;
 }
 
-const useStyles = createStyles((theme, params: { canClose?: boolean }) => ({
+const useStyles = createStyles((theme, params: { canClose?: boolean; hidden?: boolean }) => ({
   button: {
-    borderRadius: 4,
-    flex: '1 15%',
-    alignSelf: 'stretch',
-    height: 'auto',
-    textAlign: 'center',
+    width: 30,
+    height: 30,
+    display: 'flex',
+    alignItems: 'center',
     justifyContent: 'center',
-    padding: 2,
-  },
-  root: {
-    border: 'none',
-  },
-  label: {
-    color: params.canClose === false ? theme.colors.dark[2] : theme.colors.dark[0],
+    borderRadius: 2,
+    border: '1px solid transparent',
+    color: params.canClose === false ? 'var(--dt-text-dim)' : 'var(--dt-accent-light)',
+    visibility: params.hidden ? 'hidden' : 'visible',
+    transition: 'color 120ms, background-color 120ms, border-color 120ms',
+    '&:hover': {
+      backgroundColor: params.canClose === false ? 'transparent' : 'var(--dt-select)',
+      borderColor: params.canClose === false ? 'transparent' : 'var(--dt-rule)',
+      color: params.canClose === false ? 'var(--dt-text-dim)' : 'var(--dt-accent-light)',
+      cursor: params.canClose === false ? 'not-allowed' : 'pointer',
+    },
   },
 }));
 
-const HeaderButton: React.FC<Props> = ({ icon, canClose, iconSize, handleClick }) => {
-  const { classes } = useStyles({ canClose });
+const HeaderButton: React.FC<Props> = ({ icon, canClose, hidden, iconSize, handleClick }) => {
+  const { classes } = useStyles({ canClose, hidden });
 
   return (
-    <Button
-      variant="default"
-      className={classes.button}
-      classNames={{ label: classes.label, root: classes.root }}
-      disabled={canClose === false}
-      onClick={handleClick}
-    >
+    <UnstyledButton className={classes.button} disabled={canClose === false || hidden} onClick={handleClick}>
       <LibIcon icon={icon} fontSize={iconSize} fixedWidth />
-    </Button>
+    </UnstyledButton>
   );
 };
 

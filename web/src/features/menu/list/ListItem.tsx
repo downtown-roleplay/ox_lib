@@ -15,56 +15,78 @@ interface Props {
 
 const useStyles = createStyles((theme, params: { iconColor?: string }) => ({
   buttonContainer: {
-    backgroundColor: 'rgba(22, 22, 22, 0.85)',
-    borderRadius: theme.radius.md,
-    padding: 20,
-    height: 60,
+    backgroundColor: 'transparent',
+    borderBottom: '1px solid var(--dt-hairline)',
+    borderLeft: '2px solid transparent',
+    padding: '0 14px',
+    height: 64,
     scrollMargin: 8,
+    transition: 'background-color 120ms, border-color 120ms',
     '&:focus': {
-      backgroundColor: 'rgba(255, 51, 51, 0.15)',
+      backgroundColor: 'var(--dt-select)',
+      borderLeftColor: 'var(--dt-accent-light)',
       outline: 'none',
     },
   },
   iconImage: {
-    maxWidth: 32,
+    maxWidth: 26,
   },
   buttonWrapper: {
-    paddingLeft: 5,
-    paddingRight: 12,
     height: '100%',
   },
   iconContainer: {
     display: 'flex',
     alignItems: 'center',
-    width: 32,
-    height: 32,
+    justifyContent: 'center',
+    width: 26,
+    height: 26,
   },
   icon: {
     fontSize: 24,
-    color: params.iconColor || theme.colors.dark[2],
+    color: params.iconColor || 'var(--dt-accent-light)',
   },
   label: {
-    color: theme.colors.dark[1],
+    color: 'var(--dt-text-muted)',
+    fontFamily: 'var(--dt-font-body)',
+    fontWeight: 300,
     textTransform: 'uppercase',
-    fontSize: 12,
-    verticalAlign: 'middle',
+    fontSize: 13,
+    letterSpacing: '0.16em',
+    lineHeight: 1.4,
+  },
+  value: {
+    color: 'var(--dt-text)',
+    fontFamily: 'var(--dt-font-display)',
+    fontSize: 18,
+    letterSpacing: '0.05em',
+    lineHeight: 1.3,
+    textShadow: 'var(--dt-shadow-text)',
   },
   chevronIcon: {
-    fontSize: 14,
-    color: theme.colors.dark[1],
+    fontSize: 13,
+    color: 'var(--dt-accent-light)',
   },
   scrollIndexValue: {
-    color: theme.colors.dark[1],
-    textTransform: 'uppercase',
+    color: 'var(--dt-text-muted)',
+    fontFamily: 'var(--dt-font-body)',
+    fontWeight: 300,
     fontSize: 14,
+    letterSpacing: '0.08em',
   },
   progressStack: {
     width: '100%',
     marginRight: 5,
   },
   progressLabel: {
-    verticalAlign: 'middle',
-    marginBottom: 3,
+    marginBottom: 5,
+  },
+  progressRoot: {
+    backgroundColor: 'rgba(0, 0, 0, 0.55)',
+    border: '1px solid var(--dt-hairline)',
+    borderRadius: 0,
+  },
+  progressBar: {
+    backgroundColor: 'var(--dt-accent-light)',
   },
 }));
 
@@ -82,7 +104,7 @@ const ListItem = forwardRef<Array<HTMLDivElement | null>, Props>(({ item, index,
           return (ref.current = [...ref.current, element]);
       }}
     >
-      <Group spacing={15} noWrap className={classes.buttonWrapper}>
+      <Group spacing={14} noWrap className={classes.buttonWrapper}>
         {item.icon && (
           <Box className={classes.iconContainer}>
             {typeof item.icon === 'string' && isIconUrl(item.icon) ? (
@@ -99,18 +121,16 @@ const ListItem = forwardRef<Array<HTMLDivElement | null>, Props>(({ item, index,
         )}
         {Array.isArray(item.values) ? (
           <Group position="apart" w="100%">
-            <Stack spacing={0} justify="space-between">
+            <Stack spacing={0} justify="center">
               <Text className={classes.label}>{item.label}</Text>
-              <Text style={{
-                  fontFamily: "'Typewriter Style', sans-serif",
-                }}>
+              <Text className={classes.value}>
                 {typeof item.values[scrollIndex] === 'object'
                   ? // @ts-ignore for some reason even checking the type TS still thinks it's a string
                     item.values[scrollIndex].label
                   : item.values[scrollIndex]}
               </Text>
             </Stack>
-            <Group spacing={1} position="center">
+            <Group spacing={6} position="center">
               <LibIcon icon="chevron-left" className={classes.chevronIcon} />
               <Text className={classes.scrollIndexValue}>
                 {scrollIndex + 1}/{item.values.length}
@@ -120,26 +140,25 @@ const ListItem = forwardRef<Array<HTMLDivElement | null>, Props>(({ item, index,
           </Group>
         ) : item.checked !== undefined ? (
           <Group position="apart" w="100%">
-            <Text style={{
-              fontFamily: "'Typewriter Style', sans-serif",
-            }}>{item.label}</Text>
+            <Text className={classes.value}>{item.label}</Text>
             <CustomCheckbox checked={checked}></CustomCheckbox>
           </Group>
         ) : item.progress !== undefined ? (
           <Stack className={classes.progressStack} spacing={0}>
-            <Text style={{
-              fontFamily: "'Typewriter Style', sans-serif",
-            }} className={classes.progressLabel}>{item.label}</Text>
+            <Text className={`${classes.value} ${classes.progressLabel}`}>{item.label}</Text>
             <Progress
               value={item.progress}
-              color={item.colorScheme || 'dark.0'}
-              styles={(theme) => ({ root: { backgroundColor: theme.colors.dark[3] } })}
+              size="sm"
+              color={item.colorScheme}
+              classNames={
+                item.colorScheme
+                  ? { root: classes.progressRoot }
+                  : { root: classes.progressRoot, bar: classes.progressBar }
+              }
             />
           </Stack>
         ) : (
-          <Text style={{
-            fontFamily: "'Typewriter Style', sans-serif",
-          }}>{item.label}</Text>
+          <Text className={classes.value}>{item.label}</Text>
         )}
       </Group>
     </Box>

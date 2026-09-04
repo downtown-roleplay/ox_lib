@@ -1,0 +1,135 @@
+/* =========================================================
+   InputDialog.module.css — mesma casca do AlertDialog:
+   painel quase preto, grão de tinta, filete vermelho e
+   tipografia do inventário. Tokens em src/theme/rdr2.css.
+   ========================================================= */
+
+.overlay {
+  background: rgba(0, 0, 0, 0.55) !important;
+}
+
+.content {
+  position: relative !important;
+  background: var(--dt-panel) !important;
+  border: 1px solid var(--dt-hairline-strong) !important;
+  box-shadow: var(--dt-shadow-panel) !important;
+  border-radius: 2px !important;
+  padding: 0 !important;
+  font-family: var(--dt-font-body) !important;
+}
+
+.content::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--dt-panel-img);
+  background-size: cover;
+  background-position: center;
+  opacity: 0.45;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Cantos em vermelho, como no alerta. */
+.content::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  pointer-events: none;
+  z-index: 2;
+  background:
+    linear-gradient(var(--dt-accent-light), var(--dt-accent-light)) 0 0 / 14px 1px no-repeat,
+    linear-gradient(var(--dt-accent-light), var(--dt-accent-light)) 0 0 / 1px 14px no-repeat,
+    linear-gradient(var(--dt-accent-light), var(--dt-accent-light)) 100% 0 / 14px 1px no-repeat,
+    linear-gradient(var(--dt-accent-light), var(--dt-accent-light)) 100% 0 / 1px 14px no-repeat,
+    linear-gradient(var(--dt-accent-light), var(--dt-accent-light)) 0 100% / 14px 1px no-repeat,
+    linear-gradient(var(--dt-accent-light), var(--dt-accent-light)) 0 100% / 1px 14px no-repeat,
+    linear-gradient(var(--dt-accent-light), var(--dt-accent-light)) 100% 100% / 14px 1px no-repeat,
+    linear-gradient(var(--dt-accent-light), var(--dt-accent-light)) 100% 100% / 1px 14px no-repeat;
+}
+
+/* ---- Cabeçalho ---- */
+.header {
+  position: relative;
+  z-index: 1;
+  margin: 0 !important;
+  padding: 1.05rem 1.5rem 0.75rem !important;
+  background: transparent !important;
+}
+
+.header::after {
+  content: '';
+  position: absolute;
+  left: 1.5rem;
+  right: 1.5rem;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--dt-rule), transparent);
+}
+
+.title {
+  width: 100%;
+  text-align: center;
+  font-family: var(--dt-font-display) !important;
+  font-size: 1.2rem !important;
+  font-weight: 400 !important;
+  color: var(--dt-text) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.2em !important;
+  text-shadow: var(--dt-shadow-text) !important;
+  line-height: 1.4 !important;
+}
+
+/* ---- Corpo ---- */
+.body {
+  position: relative;
+  z-index: 1;
+  padding: 1.1rem 1.5rem 1.3rem !important;
+}
+
+/* ---- Botões do rodapé ---- */
+.btn {
+  font-family: var(--dt-font-display) !important;
+  font-size: 0.88rem !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.18em !important;
+  text-transform: uppercase !important;
+  padding: 0.6rem 1.5rem !important;
+  height: auto !important;
+  min-width: 108px !important;
+  border-radius: 1px !important;
+  border: 1px solid var(--dt-hairline-strong) !important;
+  background: rgba(0, 0, 0, 0.45) !important;
+  color: var(--dt-text-muted) !important;
+  transition: background-color 140ms, border-color 140ms, color 140ms !important;
+}
+
+.btn:focus,
+.btn:focus-visible {
+  outline: none !important;
+  border-color: var(--dt-accent-light) !important;
+  color: var(--dt-text) !important;
+}
+
+.btn:active {
+  transform: translateY(1px) !important;
+}
+
+.btn:disabled {
+  opacity: 0.45 !important;
+}
+
+.btnConfirm {
+  border-color: var(--dt-rule) !important;
+  color: var(--dt-text) !important;
+}
+
+.btnConfirm:hover {
+  background: var(--dt-select) !important;
+  border-color: var(--dt-accent-light) !important;
+}
+
+.btnCancel:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.6) !important;
+  color: var(--dt-text) !important;
+}
