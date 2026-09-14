@@ -91,6 +91,7 @@ function lib.notify(data)
         description = data.description or "",
         duration = data.duration or 5000,
         placement = placement,
+        uniqueId = data.id,
         progress = {
             enabled = true,
             type = "bar",
