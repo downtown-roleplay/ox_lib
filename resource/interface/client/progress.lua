@@ -74,7 +74,6 @@ local controls = {
     INPUT_VEH_EXIT = isFivem and 75 or 0xFEFAB9B4,
     INPUT_VEH_MOUSE_CONTROL_OVERRIDE = isFivem and 106 or 0x39CCABD5
 }
-
 ---@param data ProgressProps
 local function startProgress(data)
     playerState.invBusy = true
@@ -83,11 +82,31 @@ local function startProgress(data)
 
     if anim then
         if anim.dict then
-            lib.requestAnimDict(anim.dict)
+            if not DoesAnimDictExist(anim.dict) then
+                lib.print.warn(('AnimDict não existe: %s'):format(anim.dict))
+            else
+                lib.requestAnimDict(anim.dict)
 
-            TaskPlayAnim(cache.ped, anim.dict, anim.clip, anim.blendIn or 3.0, anim.blendOut or 1.0, anim.duration or -1, anim.flag or 49, anim.playbackRate or 0,
-                anim.lockX, anim.lockY, anim.lockZ)
-            RemoveAnimDict(anim.dict)
+                if HasAnimDictLoaded(anim.dict) then
+                    TaskPlayAnim(
+                        cache.ped,
+                        anim.dict,
+                        anim.clip,
+                        anim.blendIn or 3.0,
+                        anim.blendOut or 1.0,
+                        anim.duration or -1,
+                        anim.flag or 49,
+                        anim.playbackRate or 0,
+                        anim.lockX,
+                        anim.lockY,
+                        anim.lockZ
+                    )
+
+                    RemoveAnimDict(anim.dict)
+                else
+                    lib.print.warn(('Falha ao carregar AnimDict: %s'):format(anim.dict))
+                end
+            end
         elseif anim.scenario then
             TaskStartScenarioInPlace(cache.ped, anim.scenario, 0, anim.playEnter == nil or anim.playEnter --[[@as boolean]])
         end
@@ -147,14 +166,14 @@ local function startProgress(data)
     if anim then
         if anim.dict then
             StopAnimTask(cache.ped, anim.dict, anim.clip, 1.0)
-            Wait(0) -- This is needed here otherwise the StopAnimTask is cancelled
+            Wait(0)     -- This is needed here otherwise the StopAnimTask is cancelled
         else
             ClearPedTasks(cache.ped)
         end
     end
 
     playerState.invBusy = false
-    local timeOffset = (data.duration / 1000) * 20 -- try to match NUI duration with the game timer as quick fix
+    local timeOffset = (data.duration / 1000) * 20     -- try to match NUI duration with the game timer as quick fix
     local duration = progress ~= false and (GetGameTimer() - startTime + timeOffset) or 0
 
     if progress == false or duration <= data.duration then
